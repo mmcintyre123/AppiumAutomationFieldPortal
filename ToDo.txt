@@ -1,2 +1,21 @@
 To do:
 
+	> Finish first test case - expect vol to be saved.  Use sql?
+	> Get State selection working
+	> Figure out why video didn't record.
+	> Create test user for FP login and dataset - active, inactive, prospects
+	> Create more tests cases:
+
+		Login
+		1) Login - Login Verify home page Metrics
+		2) Verify Text Icon based on user permissions
+		3) Select Volunteers 
+		4) Email Active Volunteer, verify volunteer history
+		5) Text Active Volunteer, verfiy volunteer history
+		6) Add new volunteer
+		7) Select Inactive volunteers
+		8) Mark Inactive Volunteer Active [-- check counts update as well]
+		9) Select Prospects 
+		10) Convert Prospect to volunteer (edited)
+
+Keep tests short (less than 6 minutes) and log out and back in

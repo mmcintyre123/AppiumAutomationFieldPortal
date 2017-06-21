@@ -235,20 +235,20 @@ Commons.prototype.loginQuick = function(){
 		.elementById(elements.loginLogout.userName)
 		.then(function (el) {
 			return el.getAttribute('value').then(function (value) {
-				config.thisHelper = value;
+				config.thisUser = value;
 			}) //save the username for this test in case we need it.
 		})
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
-		.waitForElementById(elements.homeScreen.walkbooks, 30000).should.eventually.exist
+		.waitForElementById(elements.homeScreen.volunteers).should.eventually.exist
 		.endTotalAndLogTime('Log In')
 };
 
 // todo - this is broken because of WebDriverAgent update?  See issue on github https://github.com/facebook/WebDriverAgent/issues/624
 Commons.prototype.fullLogin = function(uname, pwd){
 	console.log('FULL LOGIN'.green.bold.underline);
-	config.thisHelper = uname; //should be like test_1654wseward.
+	config.thisUser = uname; //should be like test_1654wseward.
 	return driver
 		.sleep(1000)
 		.then(function () {

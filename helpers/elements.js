@@ -7,40 +7,114 @@ let apps = require('./apps.js');
 
 	//use elementByClassName
 	exports.general = {
-		'spinner'  : 'XCUIElementTypeActivityIndicator'
-	}
+        'spinner'  : 'XCUIElementTypeActivityIndicator'
+    }
 
 	// Updating from top down with accessibility IDs in Android - compare later to iOS
 	//By ID
 	exports.actionBar = {
-		'hamburgerMenu'     :  'mnOverflow',
-		'search'	        :  'Search', // magnifying glass - make sure this works in Android.
-		'clearSearch'       :  'search_close_btn', // 'x' mark inside the search box
-		'searchText'        :  'search_src_text', // active search query
-		'refresh'	        :  'action_refresh',
-		'addContact'	    :  '', // this usually adds a contact or volunteer, depending on the context.
-		'checkConnectivity' :  'Check Connectivity',
-		'logOut' 		    :  'Log Out' // probably use elementByName for Android
-	}
+        'hamburgerMenu' : 'hamburger',
+        'search'        : 'Search', // magnifying glass - make sure this works in Android.
+        'select'        : 'Select',
+        'cancel'        : 'Cancel',
+        'save'          : 'Save',
+        'back'          : 'Back',
+        'addVolunteer'  : 'Add', // Bottom right of the screen
+        'logOut'        : 'Log Out' // in the hamburger menu
+    }
 
 
 	// currently by xpath and ID
 	exports.loginLogout = {
-		'userName'		 : 'etLoginUsername',
-		'password'		 : 'etPassword',
-		'logIn'			 : 'btnLogin',
-		'rememberMe'	 : 'cbRemember',
-		'forgotPassword' : 'btnForgotPassword', // also currently ID accessible
-		'signOut'        : 'btnSignOut',
-		'OK'			 : 'OK',
-		'Cancel'		 : 'Cancel'
-	}
+        'userName'       : 'etUsername',
+        'password'       : 'etPassword',
+        'logIn'          : 'btnLogin',
+        'rememberMe'     : 'cbRemember',
+        'forgotPassword' : 'btnForgotPassword', // also currently ID accessible
+        'signOut'        : 'btnSignOut',
+        'OK'             : 'OK'
+    }
 
 	// by ID
 	exports.homeScreen = {
-		'walkbooks'		 : 'btnWalkbooks',
-		'voterLookup'    : 'btnVoterLookup',
-		'voterCheckIn'   : 'btnVoterCheckIn',
-		'eventCheckIn'   : 'btnEventCheckIn'
-	}
+        'events'               : '',
+        'surveys'              : '',
+        'volunteers'           : 'btnVolunteers',
+        'active'               : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[2]',
+        'inActive'             : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[6]',
+        'reActivated'          : '//*/XCUIElementTypeStaticText[7]'
+        //'activeCount'        : '',
+        //'activePercent'      : '',
+        //'inActiveCount'      : '',
+        //'inActivePercent'    : '',
+        //'reActivatedCount'   : '',
+        //'reActivatedPercent' : ''
+    }
 
+	exports.volunteers = {
+        'active'          : 'Active',
+        'inActive'        : 'Inactive',
+        'prospects'       : 'My Prospects',
+        'volunteer1'      : 'cellVolunteer_0',
+        'volunteer2'      : 'cellVolunteer_1',
+        'volunteer3'      : 'cellVolunteer_2',
+        'volunteer4'      : 'cellVolunteer_3',
+        'volunteer5'      : 'cellVolunteer_4',
+        'volunteer6'      : 'cellVolunteer_5',
+        'volunteer7'      : 'cellVolunteer_6',
+        'volunteer8'      : 'cellVolunteer_7',
+        'volunteer9'      : 'cellVolunteer_8',
+        'volunteer1phone' : 'cellVolunteer_phone3_0',
+        'volunteer2phone' : 'cellVolunteer_phone3_1',
+        'volunteer3phone' : 'cellVolunteer_phone3_2'
+    }
+
+	exports.vol_details = {
+        'delete' : 'Delete',
+        'share'  : 'Share',
+        'tags'   : 'btnAddTag',
+        'notes'  : 'btnAddNote',
+        'email'  : 'tvEmail',
+        'phone'  : 'tvPhone',
+        'tag'    : {
+                        'categ1' : 'tagCategory_0',
+                        'categ2' : 'tagCategory_1',
+                        'categ3' : 'tagCategory_2',
+                        'categ4' : 'tagCategory_3',
+                        'tag1'   : 'tagItem_0',
+                        'tag2'   : 'tagItem_1',
+                        'tag3'   : 'tagItem_2',
+                        'tag4'   : 'tagItem_3'
+                   },
+        'note'   : {
+                        'title' : 'etNoteTitle',
+                        'text' : 'etNoteText'
+                   }
+    }
+
+	exports.addVolunteer = {
+        'salut'        : 'Salutation',
+        'firstName'    : 'etFirstNameEdit',
+        'lastName'     : 'etLastNameEdit',
+        'suffix'       : 'Suffix',
+        'twitter'      : 'etTwitterEdit',
+        'facebook'     : 'etFacebookEdit',
+        'addr1'        : 'etAddressEdit',
+        'addr2'        : 'etAddress2Edit',
+        'city'         : 'etCityEdit',
+        'state'        : 'State *',
+        'zip'          : 'etZipEdit',
+        'county'       : 'etCounty',
+        'phone1'       : 'cbPhone1Edit',
+        'phone1toggle' : 'cbPhone1',
+        'phone2'       : 'cbPhone2Edit',
+        'phone2'       : 'cbPhone2',
+        'phone3'       : 'cbPhone3Edit',
+        'phone3'       : 'cbPhone3',
+        'email'        : 'etEmailEdit',
+        'gender'       : 'Gender',
+        'dob'          : 'Date of Birth',
+        'employer'     : 'etEmployerEdit',
+        'occupation'   : 'etOccupationEdit',
+        'coord'        : 'Coordinator *'
+    }

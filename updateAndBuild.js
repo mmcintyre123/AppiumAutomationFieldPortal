@@ -12,7 +12,7 @@ let homeDir = function () {
 };
 
 update = childProcess.exec(
-	"cd /Users/mliedtka/i360 && git pull ",
+	"cd /Users/mliedtka/i360fieldportal-ios && git pull ",
 	{stdio: 'inherit'},
 	function (err,stdout,stderr) {
 	    if (err) {
@@ -26,20 +26,20 @@ update = childProcess.exec(
 update.on('exit', function (code,signal) {
 
 	let clean = childProcess.spawn('xcodebuild', [
-		'-scheme', 'i360 Canvass',
-		'-target', 'i360 Canvass',
+		'-scheme', 'i360FieldPortal',
+		'-target', 'i360FieldPortal',
 		'-configuration', 'Debug',
 		'-derivedDataPath', 'build', 'clean'
-	], {stdio: "inherit", cwd: "/Users/mliedtka/i360/iOS/i360 Canvass/"});
+	], {stdio: "inherit", cwd: "/Users/mliedtka/i360fieldportal-ios/"});
 
 	clean.on('exit', function (code,signal) {
 
 		let build = childProcess.spawn( 'xcrun', [
-			'xcodebuild', '-scheme', 'i360 Canvass',
-			'-target', 'i360 Canvass',
+			'xcodebuild', '-scheme', 'i360FieldPortal',
+			'-target', 'i360FieldPortal',
 			'-configuration', 'Debug',
 			'-derivedDataPath', 'build'
-		], {stdio: "inherit", cwd: "/Users/mliedtka/i360/iOS/i360 Canvass/"} ); //the 'inherit' preserves the colors from build process
+		], {stdio: "inherit", cwd: "/Users/mliedtka/i360fieldportal-ios/"} ); //the 'inherit' preserves the colors from build process
 
 		build.on('exit', function (code, signal) {
 		  console.log('build process exited with ' + `code ${code} and signal ${signal}`);

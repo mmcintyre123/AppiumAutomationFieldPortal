@@ -40,7 +40,7 @@ for (var i in args ) {
 				'--log', '/Users/mliedtka/appium_logs1/appium.log',
 				'--address', "localhost",
 				'--default-capabilities', '{ \
-						"app":"/Users/mliedtka/Library/Developer/Xcode/DerivedData/i360_Canvass-byzgucvkbseaivggszvazdzohhjo/Build/Products/Debug-iphonesimulator/i360 Canvass.app", \
+						"app":"/Users/mliedtka/Library/Developer/Xcode/DerivedData/i360FieldPortal-ajjqwixsfucdmdchgcuxgwodjufu/Build/Products/Debug-iphonesimulator/i360FieldPortal.app/", \
 						"showIOSLog":"false", \
 						"autoAcceptAlerts":"true", \
 						"nativeInstrumentsLib":"true", \
@@ -48,9 +48,9 @@ for (var i in args ) {
 						"platformVersion":"10.2", \
 						"automationName":"XCUITest", \
 						"deviceName":"iPad Air 2", \
-						"bundleId":"com.i360.i360Walk", \
+						"bundleId":"com.i360.i360FieldPortal", \
 						"fullReset":"false", \
-						"noReset":"true" \
+						"noReset":"true"\
 				}'
 			]);
 			break;
@@ -60,7 +60,7 @@ for (var i in args ) {
 				if ( args[ i + 1 ].indexOf( 'android' ) != -1 ) {
 					appium = childProcess.spawn( 'appium', [
 						'--app-pkg', 'com.i360.i360Walk',
-						'--app', '/Users/mliedtka/AppiumAutomationTestBuiltIO/apps/i360Walk022017.apk',
+						'--app', '',
 						//( config.get( 'reset' ) == true ? '--full-reset' : '--no-reset' ),
 						'--dont-stop-app-on-reset',
 						//'--pre-launch',
@@ -72,7 +72,7 @@ for (var i in args ) {
 				} else {
 					appium = childProcess.spawn( 'appium', [
 						'--app-pkg', 'com.i360.i360Walk',
-						'--app', homeDir() + '/AppiumAutomationTestBuiltIO/apps/i360Canvass011817.ipa',
+						'--app', homeDir() + '',
 						//( config.get( 'reset' ) == true ? '--full-reset' : '--no-reset-' ),
 						'--full-reset',
 						'--dont-stop-app-on-reset',
