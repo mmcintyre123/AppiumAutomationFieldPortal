@@ -1,0 +1,81 @@
+liveview --
+
+
+Mike Meye's iOS build script - .commands file.
+appcelerator.
+
+
+
+projectDir=$HOME'/Projects/omadi_mobile/titanium_src'
+debugStyle='trace' # info|debug|trace
+
+adb () {
+  $HOME/Library/android-sdk-macosx/platform-tools/adb $*
+}
+
+logcat() {
+  $HOME/Library/android-sdk-macosx/platform-tools/adb -a logcat \*:S TiAPI:V
+}
+
+b(){
+    DISABLE_AUTO_TITLE="true"
+
+    simulatorProgram=''
+    simulator=''
+
+    if [ "$appcUsername" != "" ]; then
+        appc login --username $appcUsername --password $appcPassword --org-id 100000645
+    fi
+#    appc ti clean --project-dir $projectDir
+
+    if [ "$1" = 'a' ]
+    then
+        os='android'
+        simulator='emulator'
+        simulatorProgram='Genymotion Android'
+    fi
+
+    if [ "$1" = 'i' ]
+    then
+        os='ios'
+        simulator='simulator'
+        simulatorProgram='Apple IOS'
+    fi
+
+    if [ "$2" = 's' ]
+    then
+        echo -ne "\e]1;$simulatorProgram Simulator\a"
+
+    if [ "$3" = 'l' ]
+    then
+        liveview='--liveview'
+    else
+        liveview=''
+    fi
+
+         if [ "$1" = 'i' ]
+        then
+            osascript -e 'tell app "Simulator" to quit'
+        else
+            osascript -e 'tell app "adb" to quit'
+        fi
+
+        appc ti build --skip-js-minify --project-dir $projectDir --skip-js-minify -p $os -T $simulator --log-level $debugStyle $liveview
+    else
+        echo -ne "\e]1;$os Device\a"
+
+    if [ "$2" = 'l' ]
+    then
+        liveview='--liveview'
+    else
+        liveview=''
+    fi
+
+        if [ "$os" = 'android' ]
+        then
+            appc ti build -f --skip-js-minify --project-dir $projectDir --skip-js-minify -p $os -T device --device-id --log-level $debugStyle $liveview
+        else
+            appc ti build -f --skip-js-minify --project-dir $projectDir --skip-js-minify -p $os -T device --developer-name "$appleDevName" --pp-uuid $appleDevCertId --log-level $debugStyle $liveview
+        fi
+    fi
+}

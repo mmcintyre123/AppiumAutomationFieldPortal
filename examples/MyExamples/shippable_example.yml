@@ -1,0 +1,53 @@
+# shippable.yml example from Low Kian Seong
+
+build_environment: ubuntu:xenial
+
+env:
+  global:
+  - PROJECT=eclaim_revamp HIPCHAT_ROOM=Eclaimrevamp
+  - secure: c87n6T4QlFLaKexno9KWii89e5lENrsSMyO7wkSI
+
+language: python
+
+install:
+  - shippable_retry apt-get -y update
+  - shippable_retry apt-get install libjpeg8-dev libpq-dev
+  - wget -q http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/root/miniconda2/bin:$PATH
+  - conda update -q --yes conda
+  - conda install -c conda-forge --yes pillow
+  - conda install -c pandas --yes psycopg2
+  - pip install --upgrade pip
+  - pip install xhtml2pdf
+  - python pipreqs.py requirements.txt
+  - python pipreqs.py req_test.txt
+
+before_script:
+  - mkdir -p shippable/testresults
+
+script:
+  - cd eclaim && coverage run manage.py test -v 3 --settings=config.test --with-xunit --xunit-file=../shippable/testresults/nosetests.xml
+
+integrations:
+  notifications:
+  - integrationName: eclaim-hipchat
+    type: hipchat
+    recipients:
+    - '#eClaim Revamp Official'
+  on_success: always
+  on_failure: always
+
+after_success:
+  # - cd ../shippable && python hipchat_notifier.py --project $PROJECT --room $HIPCHAT_ROOM --token $HIPCHAT_TOKEN -s
+  - printenv
+  - echo $BRANCH
+    # - BRANCH=$BRANCH bash -c ./triggerbuild.sh
+  - BRANCH=$BRANCH cd $SHIPPABLE_BUILD_DIR && bash -c ./triggerbuild.sh
+
+after_failure:
+  # - cd ../shippable && python hipchat_notifier.py --project $PROJECT --room $HIPCHAT_ROOM --token $HIPCHAT_TOKEN
+  - printenv
+  - echo $BRANCH
+

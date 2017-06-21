@@ -1,0 +1,36 @@
+Log In: 0 hours, 0 minutes, 2.204 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.857 seconds.
+Load Survey: 0 hours, 0 minutes, 4.750 seconds.
+Load Walkbook: 0 hours, 0 minutes, 3.166 seconds.
+Home Page to Household: 0 hours, 1 minutes, 57.890 seconds.
+Home Page to Household: 0 hours, 2 minutes, 10.338 seconds.
+Home Page to Household: 0 hours, 2 minutes, 30.506 seconds.
+Log In: 0 hours, 0 minutes, 4.864 seconds.
+Load Survey List: 0 hours, 0 minutes, 1.365 seconds.
+Load Survey: 0 hours, 0 minutes, 4.781 seconds.
+Load Walkbook: 0 hours, 0 minutes, 4.789 seconds.
+Home Page to Household: 0 hours, 1 minutes, 11.578 seconds.
+Log In: 0 hours, 0 minutes, 1.327 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.850 seconds.
+Load Survey: 0 hours, 0 minutes, 3.837 seconds.
+Load Walkbook: 0 hours, 0 minutes, 3.229 seconds.
+Log In: 0 hours, 0 minutes, 1.866 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.650 seconds.
+Load Survey: 0 hours, 0 minutes, 3.754 seconds.
+Load Walkbook: 0 hours, 0 minutes, 3.780 seconds.
+Log In: 0 hours, 0 minutes, 4.341 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.631 seconds.
+Load Survey: 0 hours, 0 minutes, 4.106 seconds.
+Load Walkbook: 0 hours, 0 minutes, 3.59 seconds.
+Log In: 0 hours, 0 minutes, 1.499 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.671 seconds.
+Load Survey: 0 hours, 0 minutes, 4.418 seconds.
+Load Walkbook: 0 hours, 0 minutes, 4.687 seconds.
+Log In: 0 hours, 0 minutes, 3.637 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.688 seconds.
+Load Survey: 0 hours, 0 minutes, 3.946 seconds.
+Load Walkbook: 0 hours, 0 minutes, 2.719 seconds.
+Log In: 0 hours, 0 minutes, 1.636 seconds.
+Load Survey List: 0 hours, 0 minutes, 0.674 seconds.
+Load Survey: 0 hours, 0 minutes, 3.326 seconds.
+Load Walkbook: 0 hours, 0 minutes, 2.895 seconds.

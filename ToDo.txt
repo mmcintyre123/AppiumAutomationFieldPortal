@@ -1,0 +1,59 @@
+To do:
+
+	Automation flow for Continuous Integration:
+
+		Change is checked into repo on bitbucket
+		Shippable or Jenkins detects the change and queues a build and automation run =>	
+			
+			1. Run a shell script that pulls the latest code from bitbucket, then builds the app locally, then kicks off the tests:
+
+cd ~/i360 && \
+xcrun simctl uninstall D7662095-A24B-44B5-A0B1-071A1250DAE9 com.i360.i360Walk && \
+git pull && \
+cd ~/i360/iOS/i360\ Canvass && \
+xcodebuild -scheme i360\ Canvass -target i360\ Canvass -destination 'platform=iOS Simulator,id=D7662095-A24B-44B5-A0B1-071A1250DAE9' -configuration Debug -derivedDataPath build clean && \
+xcrun xcodebuild -scheme i360\ Canvass -target i360\ Canvass -destination 'platform=iOS Simulator,id=D7662095-A24B-44B5-A0B1-071A1250DAE9' -configuration Debug -derivedDataPath build && 
+
+			2. Push the app to testflight (does it need to be an ipa?  Look into this.  See tutorial on Test Flight integration with Jenkins, research for Shippable).
+
+			*3. Kick off appium tests
+
+cd ~/AppiumAutomation && node run.js -sim iosSim2
+
+	// do git diff and commit all changes
+	// finish presentation - make videos
+	// run all icon_colors test cases in dbg mode and non-dbg mode and verify they pass.
+	// remove remnants of recorder.  Save a record in case we want it in the future or for Android?
+	// what is package-lock.json?
+	// update sql with Rob's points
+	// address todo items in code
+	// declare config.thisElem = ''; at the beginning of every test case - or in beforeEach?
+	// declare variables in before each function - e.g. config.thisHousehold = ''; etc.
+	// clean up / figure out where timeouts are defined and which are being applied
+	// create a test result file and email with mailgun? - https://www.npmjs.com/package/mailgun-js
+
+
+
+
+
+
+
+Later
+
+	// elementOrNull command - utilize in fullLogin method:
+
+		Retrieve an element avoiding not found exception and returning null instead:
+		elementOrNull(using, value, cb) -> cb(err, element)
+		May try this in fullLogin instead of the nested functions to check if rememberMe is checked.
+
+Miscelaneous
+
+	// try these for finding elements by a part of their id:
+
+	  .elementByXPath('//*[(contains(id()\'prim_btnRemaining\')],600000)
+	  .elementByXPath('//*[contains(@id,\'cellHouse_8\')]')
+	  .elementByXPath('//*[contains(@text,\'cellHouse_8\')]')
+	  .elementByXPath('//*[contains(@checked,\'false\')]')
+
+	// wait for an element by one of two things:
+	  .waitForElementByXPath( '//UIAApplication[1]/UIAWindow[1]/UIAElement[2] | //*[ @text=\'View Later\' ]', 600000 )

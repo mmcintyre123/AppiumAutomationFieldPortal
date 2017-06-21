@@ -1,0 +1,20 @@
+{
+  "IPadSimWalkApp" :
+    {
+      "deviceName": "iPad Air 2",
+      "app": "/Users/mliedtka/Library/Developer/Xcode/DerivedData/i360_Canvass-byzgucvkbseaivggszvazdzohhjo/Build/Products/Debug-iphonesimulator/i360 Canvass.app",
+      "platformVersion": "10.2",
+      "newCommandTimeout": 100000,
+      "autoLaunch" : "true",
+      "platformName":"iOS"
+    },
+  "AndroidDeviceWalkApp" :
+    {
+      "deviceName": "G4",
+      "app": "/Users/mliedtka/AppiumAutomationTestBuiltIO/apps/i360Walk022017.apk",
+      "platformVersion": "6.0",
+      "newCommandTimeout": 100000,
+      "autoLaunch" : "true",
+      "platformName":"Android"
+    }
+}
