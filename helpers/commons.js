@@ -119,6 +119,8 @@ Commons.prototype.beforeAll = function(){
 		let time = moment().tz(timezone).format();
 		let myCurrentTime = time.slice(11,19).replace(/:/g,'_');
 
+		config.dateTime = time.slice(5,16).replace(/:/g,'_').replace(/-/g,'_');
+
 		// Current date
 		let month = (new Date().getMonth() + 1);
 		let day = new Date().getDate();

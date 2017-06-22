@@ -19,3 +19,10 @@ To do:
 		10) Convert Prospect to volunteer (edited)
 
 Keep tests short (less than 6 minutes) and log out and back in
+
+
+
+Notes:
+
+	// to clean out Web Driver folder that accumulates screenshots and logs:
+	rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*

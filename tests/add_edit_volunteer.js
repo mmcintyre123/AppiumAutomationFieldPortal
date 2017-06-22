@@ -31,6 +31,7 @@ module.exports = function () {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
+		console.log('The date and current time is: ' + config.dateTime)
 
 		it('Quick Login', function () {
 			return driver
@@ -38,6 +39,9 @@ module.exports = function () {
 		});
 
 		it('Should add a volunteer', function () {
+			let firstName = 'First' + config.dateTime;
+			let lastName = 'Last' + config.dateTime;
+
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
@@ -45,18 +49,19 @@ module.exports = function () {
 				.click()
 				.elementById(elements.addVolunteer.firstName)
 				.click()
-				.sendKeys('First0621a')
+				.sendKeys(firstName)
 				.elementById(elements.addVolunteer.lastName)
 				.click()
-				.sendKeys('Last0621a')
+				.sendKeys()
 				.elementById(elements.addVolunteer.state)
 				.click()
-				.sendKeys('VA')
+				.sendKeys(lastName)
 				.elementById(elements.addVolunteer.email)
 				.click()
-				.sendKeys('First0621a.Last0621a@callingfromhome.com')
+				.sendKeys(firstName + '.' + lastName + '@callingfromhome.com')
 				.elementById(elements.actionBar.save)
 				.click()
+				// expect something
 		});
 	});
 };

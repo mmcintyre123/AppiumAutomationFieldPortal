@@ -50,6 +50,8 @@ for (var i in args ) {
 						"deviceName":"iPad Air 2", \
 						"bundleId":"com.i360.i360FieldPortal", \
 						"fullReset":"false", \
+						"clearSystemFiles":"true", \
+						"preventWDAAttachments":"true",\
 						"noReset":"true"\
 				}'
 			]);
@@ -67,6 +69,8 @@ for (var i in args ) {
 						'--debug-log-spacing',
 						'--automation-name', 'Appium',
 						'--platform-name', 'Android',
+						'--clearSystemFiles','true',
+						'--preventWDAAttachments','true',
 						'--platform-version', '6.0'
 					] );
 				} else {
@@ -84,6 +88,8 @@ for (var i in args ) {
 						'--automation-name', 'Appium',
 						'--platform-name', 'iOS',
 						'--platform-version', '10.2',
+						'--clearSystemFiles','true',
+						'--preventWDAAttachments','true',
 						'--native-instruments-lib'
 					] );
 				}
