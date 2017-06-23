@@ -8,6 +8,7 @@
   "devDependencies": {
     "chai": "^4.0.2",
     "chai-as-promised": "^7.0.0",
+    "clipboardy": "^1.1.4",
     "colors": "*",
     "gradle": "^1.0.7",
     "lodash.mapkeys": "^4.6.0",

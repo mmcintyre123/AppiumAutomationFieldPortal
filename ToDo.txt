@@ -1,8 +1,7 @@
 To do:
 
 	> Finish first test case - expect vol to be saved.  Use sql?
-	> Get State selection working
-	> Figure out why video didn't record.
+	> Get state selection working
 	> Create test user for FP login and dataset - active, inactive, prospects
 	> Create more tests cases:
 
@@ -18,11 +17,19 @@ To do:
 		9) Select Prospects 
 		10) Convert Prospect to volunteer (edited)
 
+	> Figure out why video didn't record.
+	> modify wait_for_sql in walk project to match this.
+
+	
+	
 Keep tests short (less than 6 minutes) and log out and back in
 
-
-
 Notes:
+	// in future research if possible to pass in database to query for sql queries, like using :setvar
+
+	// can use clip package to access clipboard: 			
+		let clip = require('clipboardy');
+		clip.writeSync('VA') // put state on clipboard
 
 	// to clean out Web Driver folder that accumulates screenshots and logs:
 	rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*

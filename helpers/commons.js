@@ -2,21 +2,23 @@
 
 require('colors');
 require('./setup');
-let _         =  require('underscore');
-let wd 	  	  =  require('wd');
-let fs        =  require('fs');
-let fsExtra   =  require('fs-extra');
-let assert    =  require('assert');
-let pry       =  require('pryjs');
-let config    =  require('./config');
-let store     =  require('./Store');
-let elements  =  require('./elements');
-let sqlQuery  =  require('./queries');
-let commons   =  require('./commons');
-let _p        =  require('./promise-utils');
-let intercept =  require('intercept-stdout');
+let _            = require('underscore');
+let wd 	  	     = require('wd');
+let fs           = require('fs');
+let fsExtra      = require('fs-extra');
+let assert       = require('assert');
+let pry          = require('pryjs');
+let config       = require('./config');
+let store        = require('./Store');
+let elements     = require('./elements');
+let sqlQuery     = require('./queries');
+let commons      = require('./commons');
+let _p           = require('./promise-utils');
+let intercept    = require('intercept-stdout');
 let childProcess = require( 'child_process' );
-let driver    =  config.driver;
+let Mocha        = require('mocha');
+let mocha        = new Mocha({});
+let driver       = config.driver;
 
 // todo this.os doesn't seem to be working.
 function Commons () {
@@ -84,6 +86,8 @@ Commons.prototype.beforeAll = function(){
 
 		let elements = config.elements;
 		let desired  = config.desired;
+		config.thisUser = ''
+
 
 		require("./logging").configure(driver);
 
@@ -128,8 +132,8 @@ Commons.prototype.beforeAll = function(){
 
 		// Local DateTime
 		config.myDateTime = (month + '_' + day + '_' + year + '_' + myCurrentTime);
-		config.wStreamLogTimeFile = fs.createWriteStream( 'loadTimeLogs/loadTimesLog_' +
-														  config.myDateTime + '.txt' )
+		config.wStreamLogTimeFile = fs.createWriteStream( 'loadTimeLogs/loadTimesLog_' + config.myDateTime + '.txt' )
+		config.wStreamTestResultFile = fs.createWriteStream('test_results/test_result_' + config.myDateTime + '.txt')
 		config.logTimes = {}
 
 		return driver.init(desired)
@@ -144,7 +148,7 @@ Commons.prototype.beforeEachIt = function(){
 		config.currentTest = this.currentTest // put the currentTest object on Config in case we want to access it mid-test
 
 		//record video
-		config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomation/video/' + this.currentTest.title.replace(/\s+/ig,'_') + '.mp4']);
+		config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + this.currentTest.title.replace(/\s+/ig,'_') + '.mp4']);
 		config.video.on('exit', console.log.bind(console, 'video recording exited'));
 		config.video.on('close', console.log.bind(console, 'video recording closed'));
 
@@ -167,18 +171,26 @@ Commons.prototype.beforeEachIt = function(){
 Commons.prototype.afterEachIt = function(){
 	afterEach(function() {
 		// let allPassed = allPassed && this.currentTest.state === 'passed';
-
+		let thisTest = this.currentTest.title;
 		config.video.kill('SIGINT');
-	/*
+
+		/*
 			//video recorder stuff
 			config.recorder.stopSaveAndClear(config.recorder_output, function() {}.bind(this));
-	*/
+		*/
+
 		//test stuff
 		if (this.currentTest.state !== 'passed') {
-			let thisTest = this.currentTest.title;
 			return driver
 				.takeScreenshotMethod(thisTest);
+		} else if (this.currentTest.state == 'passed') {
+			config.wStreamTestResultFile.write('Test Passed: ' + thisTest + '\n')
+		} else if (this.currentTest.state == 'failed'){
+			config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n')
+		} else {
+			config.wStreamTestResultFile.write('Test ' + this.currentTest.state + ' :' + thisTest + '\n')
 		}
+
     });
 };
 Commons.prototype.afterAll = function(){
@@ -186,6 +198,7 @@ Commons.prototype.afterAll = function(){
 	after(function() {
 
 		config.wStreamLogTimeFile.end();
+		config.wStreamTestResultFile.end();
 		return driver
 			.sleep(1005)
 			.quit()
@@ -243,7 +256,7 @@ Commons.prototype.loginQuick = function(){
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
-		.waitForElementById(elements.homeScreen.volunteers).should.eventually.exist
+		.waitForElementById(elements.homeScreen.volunteers,30000)
 		.endTotalAndLogTime('Log In')
 };
 
@@ -319,17 +332,19 @@ Commons.prototype.consoleLog = function(string){
 };
 
 Commons.prototype.wait_for_sql = function(sql_query_name, recordset_object){
+	// both args should be strings
 	let counter = 0
 	return new Promise(function(resolve, reject) {
 		(function wait_1() {
-			if (Object.keys(recordset_object || []).length !== 0 ) {
+			if (Object.keys(config[recordset_object] || []).length !== 0 ) {
 				return resolve();
 			} else {
 				counter += 1
 				setTimeout(wait_1, 2000);
 				if (counter === 1) {
-					console.log('Waiting for ' + sql_query_name + ' to return....\n\
-						' + sql_query_name + '.length = ' + (recordset_object || []).length)
+
+					console.log('Waiting for ' + sql_query_name + ' to return....\n'
+						+ sql_query_name + '.length = ' + Object.keys(config[recordset_object] || []).length)
 				} else if (counter > 1 && counter < 30) {
 					console.log('Waiting...')
 				} else if (counter > 30) {

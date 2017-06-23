@@ -2,10 +2,10 @@
 
 require( 'colors' );
 let childProcess = require( 'child_process' );
-let config = require( './helpers/config');
-let loaded  = false;
-let rawArgs = process.argv.slice( 2 );
-let args    = [ 'mocha.js' ];
+let config       = require( './helpers/config');
+let loaded       = false;
+let rawArgs      = process.argv.slice( 2 );
+let args         = [ 'mocha.js' ];
 let appium;
 let homeDir = function () {
 	return process.env[ ( process.platform == 'win32' ) ? 'USERPROFILE' : 'HOME' ];
@@ -100,17 +100,12 @@ for (var i in args ) {
 
 			break;
 		}
-
-		appium.on('exit', function (code, signal) {
-		  console.log('appium process exited with ' + `code ${code} and signal ${signal}`);
-		});
-
 	}
-
-
-
 }
 
+appium.on('exit', function (code, signal) {
+	console.log('appium process exited with ' + `code ${code} and signal ${signal}`);
+});
 /*
 appium.stdout.on( 'data', function ( data ) {
 
@@ -159,7 +154,6 @@ appium.stdout.on( 'data', function ( data ) {
 		  console.log('mocha process exited with ' + `code ${code} and signal ${signal}`);
 		  appium.kill('SIGINT')
 		});
-
 	}
 });
 
