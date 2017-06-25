@@ -1,0 +1,7 @@
+Test Passed: Quick Login
+Test Passed: Should create last volunteer object
+Test Passed: Volunteer id was created
+Test Passed: Contact id was created
+Test Passed: First name was as expected
+Test Passed: Last name was as expected
+Test Failed: State was as expected

@@ -70,7 +70,7 @@ module.exports = function () {
 		});
 
 		it('State was as expected', function () {
-			config.lastCreatedVolunteer[0].state.should.match(/^AL$/)
+			config.lastCreatedVolunteer[0].state.should.match(/^VA$/) // should fail todo remove
 		});
 
 		it('Email was as expected', function () {

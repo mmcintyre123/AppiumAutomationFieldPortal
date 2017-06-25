@@ -2,8 +2,9 @@
 
 require('colors');
 require('./setup');
+let repl         = require('repl');
 let _            = require('underscore');
-let wd 	  	     = require('wd');
+let wd           = require('wd');
 let fs           = require('fs');
 let fsExtra      = require('fs-extra');
 let assert       = require('assert');
@@ -87,6 +88,10 @@ Commons.prototype.beforeAll = function(){
 		let elements = config.elements;
 		let desired  = config.desired;
 		config.thisUser = ''
+		config.testResults = {};
+		config.testResults.Passed = [];
+		config.testResults.Failed = [];
+		config.testResults.Other = [];
 
 
 		require("./logging").configure(driver);
@@ -171,26 +176,27 @@ Commons.prototype.beforeEachIt = function(){
 Commons.prototype.afterEachIt = function(){
 	afterEach(function() {
 		// let allPassed = allPassed && this.currentTest.state === 'passed';
+		/* //video recorder stuff config.recorder.stopSaveAndClear(config.recorder_output, function() {}.bind(this)); */
+
 		let thisTest = this.currentTest.title;
 		config.video.kill('SIGINT');
 
-		/*
-			//video recorder stuff
-			config.recorder.stopSaveAndClear(config.recorder_output, function() {}.bind(this));
-		*/
-
-		//test stuff
-		if (this.currentTest.state !== 'passed') {
+		//test stuff - screenshot on failure, log results to file and store in object to console.log at the end.
+		if (this.currentTest.state == 'failed') {
+			config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n')
+			config.testResults.Failed.push(thisTest)
 			return driver
 				.takeScreenshotMethod(thisTest);
+
 		} else if (this.currentTest.state == 'passed') {
 			config.wStreamTestResultFile.write('Test Passed: ' + thisTest + '\n')
-		} else if (this.currentTest.state == 'failed'){
-			config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n')
+			config.testResults.Passed.push(thisTest)
+
 		} else {
 			config.wStreamTestResultFile.write('Test ' + this.currentTest.state + ' :' + thisTest + '\n')
-		}
+			config.testResults.Other.push(thisTest);
 
+		}
     });
 };
 Commons.prototype.afterAll = function(){
@@ -199,10 +205,26 @@ Commons.prototype.afterAll = function(){
 
 		config.wStreamLogTimeFile.end();
 		config.wStreamTestResultFile.end();
+
 		return driver
 			.sleep(1005)
 			.quit()
 			.finally(function() {
+
+				let unhook_intercept = intercept(function (txt) {
+					return txt.replace(/.*undefined.*/i, '');
+				})
+
+				console.log('\n\n******* TEST RESULTS *******\n'.white)
+				config.testResults.Passed.map(function (thisTest) {
+					return console.log('\u2713  '.green + thisTest)
+				})
+
+				config.testResults.Failed.map(function (thisTest) {
+					return console.log('\u2717  '.red + thisTest)
+				})
+				console.log('\n****************************'.white)
+
 				if (process.env.SAUCE) {
 					return driver.sauceJobStatus(allPassed);
 				}
