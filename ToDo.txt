@@ -4,16 +4,16 @@ To do:
 	> Create more tests cases:
 
 		Login
-		1) Login - Login Verify home page Metrics
-		2) Verify Text Icon based on user permissions
-done	3) Select Volunteers 
-		4) Email Active Volunteer, verify volunteer history
-		5) Text Active Volunteer, verfiy volunteer history
-done	6) Add new volunteer
-		7) Select Inactive volunteers
-		8) Mark Inactive Volunteer Active [-- check counts update as well]
 		9) Select Prospects 
 		10) Convert Prospect to volunteer (edited)
+		7) Select Inactive volunteers
+		8) Mark Inactive Volunteer Active [-- check counts update as well]
+		2) Verify Text Icon based on user permissions
+		4) Email Active Volunteer, verify volunteer history
+		5) Text Active Volunteer, verify volunteer history
+done	1) Login - Login Verify home page Metrics
+done	3) Select Volunteers 
+done	6) Add new volunteer
 
 	> Figure out why video didn't record.
 	> modify wait_for_sql in walk project to match this.
