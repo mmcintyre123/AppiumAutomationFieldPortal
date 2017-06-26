@@ -37,12 +37,15 @@ let apps = require('./apps.js');
 
 	// by ID
 	exports.homeScreen = {
-        'events'               : '',
-        'surveys'              : '',
-        'volunteers'           : 'btnVolunteers',
-        'active'               : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[2]',
-        'inActive'             : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[6]',
-        'reActivated'          : '//*/XCUIElementTypeStaticText[7]'
+        'events'             : '',
+        'surveys'            : '',
+        'volunteers'         : 'btnVolunteers',
+        'activeCount'        : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[4]',
+        'activePercent'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[5]',
+        'inActiveCount'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[8]',
+        'inActivePercent'    : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[10]',
+        'reActivatedCount'   : '//*/XCUIElementTypeStaticText[9]',
+        'reActivatedPercent' : '//*/XCUIElementTypeStaticText[11]'
         //'activeCount'        : '',
         //'activePercent'      : '',
         //'inActiveCount'      : '',

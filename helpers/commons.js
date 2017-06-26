@@ -275,11 +275,19 @@ Commons.prototype.loginQuick = function(){
 				config.thisUser = value;
 			}) //save the username for this test in case we need it.
 		})
+		.then(function getUserId() {
+			sqlQuery.getUserId()
+		})
+		.wait_for_sql('getUserId', 'userId')
+		.then(function setDBName() {
+			sqlQuery.getDatabaseName()
+		})
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
 		.waitForElementById(elements.homeScreen.volunteers,30000)
 		.endTotalAndLogTime('Log In')
+		.wait_for_sql('getDatabaseName','databaseName')
 };
 
 // todo - this is broken because of WebDriverAgent update?  See issue on github https://github.com/facebook/WebDriverAgent/issues/624

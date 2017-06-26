@@ -1,17 +1,15 @@
 To do:
 
-	> Finish first test case - expect vol to be saved.  Use sql?
-	> Get state selection working
 	> Create test user for FP login and dataset - active, inactive, prospects
 	> Create more tests cases:
 
 		Login
 		1) Login - Login Verify home page Metrics
 		2) Verify Text Icon based on user permissions
-		3) Select Volunteers 
+done	3) Select Volunteers 
 		4) Email Active Volunteer, verify volunteer history
 		5) Text Active Volunteer, verfiy volunteer history
-		6) Add new volunteer
+done	6) Add new volunteer
 		7) Select Inactive volunteers
 		8) Mark Inactive Volunteer Active [-- check counts update as well]
 		9) Select Prospects 
@@ -19,6 +17,9 @@ To do:
 
 	> Figure out why video didn't record.
 	> modify wait_for_sql in walk project to match this.
+	> update sql queries in walk project to set connection conditionally for test vs. prod
+	> possible to set org of query conditionally?
+	> State selection - figure out how to scroll
 
 	
 	
@@ -33,3 +34,5 @@ Notes:
 
 	// to clean out Web Driver folder that accumulates screenshots and logs:
 	rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*
+
+	// Had to set user id, name and database name in the login step, and make all queries dynamically set the current database before they run

@@ -8,6 +8,15 @@
       "autoLaunch" : "true",
       "platformName":"iOS"
     },
+  "IPadSimFieldPortalApp" :
+    {
+      "deviceName": "iPad Air 2",
+      "app": "/Users/mliedtka/Library/Developer/Xcode/DerivedData/i360FieldPortal-ajjqwixsfucdmdchgcuxgwodjufu/Build/Products/Debug-iphonesimulator/i360FieldPortal.app/",
+      "platformVersion": "10.2",
+      "newCommandTimeout": 100000,
+      "autoLaunch" : "true",
+      "platformName":"iOS"
+    },
   "AndroidDeviceWalkApp" :
     {
       "deviceName": "G4",

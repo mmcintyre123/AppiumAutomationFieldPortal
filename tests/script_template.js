@@ -32,9 +32,9 @@ module.exports = function () {
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Full Login', function () {
+		it('Login Quick', function () {
 			return driver
-				.fullLogin()
+				.loginQuick()
 		});
 
 		it('Should do what...', function () {
