@@ -2,6 +2,7 @@
 
 require( 'colors' );
 let childProcess = require( 'child_process' );
+let intercept    = require('intercept-stdout');
 let config       = require( './helpers/config');
 let loaded       = false;
 let rawArgs      = process.argv.slice( 2 );
@@ -106,6 +107,7 @@ for (var i in args ) {
 appium.on('exit', function (code, signal) {
 	console.log('appium process exited with ' + `code ${code} and signal ${signal}`);
 });
+
 /*
 appium.stdout.on( 'data', function ( data ) {
 

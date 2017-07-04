@@ -46,6 +46,16 @@ module.exports = function () {
 				.wait_for_sql('getHomeScreenStats', 'homeScreenStats')
 		});
 
+		it('Volunteer Base Count/String', function () {
+			return driver
+				.elementByXPath(elements.homeScreen.volBaseString)
+				.then(function (el) {
+					return el.getAttribute('name').then(function (string) {
+						assert.equal(string, config.homeScreenStats[0].volunteerbase)
+					})
+				})
+		});
+
 		it('Active Count', function () {
 			return driver
 				.elementByXPath(elements.homeScreen.activeCount)

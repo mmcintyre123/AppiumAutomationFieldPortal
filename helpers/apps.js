@@ -8,7 +8,7 @@ let homeDir = function () {
 let home = homeDir();
 
 //built.io example:
-exports.iosSimApp = home + '/Library/Developer/Xcode/DerivedData/i360FieldPortal-ajjqwixsfucdmdchgcuxgwodjufu/Build/Products/Debug-iphonesimulator/i360FieldPortal.app/'
+exports.iosSimApp = home + '/i360fieldportal-ios/build/Build/Products/Debug-iphoneos/i360FieldPortal.app/'
 exports.iosDeviceApp = home + '';
 exports.androidDeviceApp = home + ''; // mac
 exports.androidDeviceAppW = home + ''; // windows

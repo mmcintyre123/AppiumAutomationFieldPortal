@@ -1,13 +1,14 @@
 To do:
 
-	> Create test user for FP login and dataset - active, inactive, prospects
+	> make framework run in prod or test
+
 	> Create more tests cases:
 
 		Login
-		9) Select Prospects 
-		10) Convert Prospect to volunteer (edited)
-		7) Select Inactive volunteers
-		8) Mark Inactive Volunteer Active [-- check counts update as well]
+done	9) Select Prospects 
+done	10) Convert Prospect to volunteer (edited)
+done	7) Select Inactive volunteers
+done	8) Mark Inactive Volunteer Active [-- check counts update as well]
 		2) Verify Text Icon based on user permissions
 		4) Email Active Volunteer, verify volunteer history
 		5) Text Active Volunteer, verify volunteer history
@@ -15,13 +16,18 @@ done	1) Login - Login Verify home page Metrics
 done	3) Select Volunteers 
 done	6) Add new volunteer
 
-	> Figure out why video didn't record.
+done > possible to set org of query conditionally?
+	> change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
+	> everywhere we check for attributes of an element in the list, also assert the element is visible (if expected to be) - risk of false positives
+	> make sure asserts are like assert.equal(actual, expected)
+	> Create test user for FP login and dataset - active, inactive, prospects
+	> State selection - figure out how to scroll
+	> Anytime we have a long wait statement, be sure to time the action.
+	> Make each test case as independent as possible - at the beginning expect to be on the required starting
+		point using elementByIdOrNull, and if not, reset app and go there.
 	> modify wait_for_sql in walk project to match this.
 	> update sql queries in walk project to set connection conditionally for test vs. prod
-	> possible to set org of query conditionally?
-	> State selection - figure out how to scroll
 
-	
 	
 Keep tests short (less than 6 minutes) and log out and back in
 
@@ -36,3 +42,6 @@ Notes:
 	rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*
 
 	// Had to set user id, name and database name in the login step, and make all queries dynamically set the current database before they run
+
+	// to clean out videos, screenshots, loadTimeLogs, and test results
+	rm -rfv $HOME/AppiumAutomationFieldPortal/test_results/* $HOME/AppiumAutomationFieldPortal/loadTimeLogs/* $HOME/AppiumAutomationFieldPortal/video/* $HOME/AppiumAutomationFieldPortal/screenShots/*

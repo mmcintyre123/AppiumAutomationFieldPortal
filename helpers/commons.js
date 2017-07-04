@@ -114,10 +114,10 @@ Commons.prototype.beforeAll = function(){
 			desired.tags = ['sample'];
 		}
 		//clear and create screenshots, and loadTimeLogs directories
-		fsExtra.removeSync('./screenShots')
-		fsExtra.mkdirs('./screenShots')
-		fsExtra.removeSync('./video')
-		fsExtra.mkdirs('./video')
+		//fsExtra.removeSync('./screenShots')
+		//fsExtra.mkdirs('./screenShots')
+		//fsExtra.removeSync('./video')
+		//fsExtra.mkdirs('./video')
 		fsExtra.removeSync('./loadTimeLogs') // to clear out the load time file if necessary
 		fsExtra.mkdirs('./loadTimeLogs')
 
@@ -128,7 +128,7 @@ Commons.prototype.beforeAll = function(){
 		let time = moment().tz(timezone).format();
 		let myCurrentTime = time.slice(11,19).replace(/:/g,'_');
 
-		config.dateTime = time.slice(5,16).replace(/:/g,'_').replace(/-/g,'_');
+		config.dateTime = time.slice(5,19).replace(/:/g,'_').replace(/-/g,'_'); // like 06_26T01_09_04 (24 hr time)
 
 		// Current date
 		let month = (new Date().getMonth() + 1);
@@ -153,7 +153,7 @@ Commons.prototype.beforeEachIt = function(){
 		config.currentTest = this.currentTest // put the currentTest object on Config in case we want to access it mid-test
 
 		//record video
-		config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + this.currentTest.title.replace(/\s+/ig,'_') + '.mp4']);
+		config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + process.argv.slice(2)[2] + '_' +  this.currentTest.title.replace(/\s+/ig,'_') + '.mp4']);
 		config.video.on('exit', console.log.bind(console, 'video recording exited'));
 		config.video.on('close', console.log.bind(console, 'video recording closed'));
 
@@ -183,6 +183,9 @@ Commons.prototype.afterEachIt = function(){
 
 		//test stuff - screenshot on failure, log results to file and store in object to console.log at the end.
 		if (this.currentTest.state == 'failed') {
+			console.log(('\n\t' + this.currentTest.err.message).red + '\n')
+			//console.log(('\n\t' + this.currentTest.err.message.match(/^.*?(?=Error)/gi)).red)
+			//console.log(('\t' + this.currentTest.err.message.match(/Error.*/gi) + '\n').red)
 			config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n')
 			config.testResults.Failed.push(thisTest)
 			return driver
@@ -269,6 +272,13 @@ Commons.prototype.endTotalAndLogTime = function(startName){
 Commons.prototype.loginQuick = function(){
 	console.log('LOGIN QUICK'.green.bold.underline);
 	return driver
+		.elementByIdOrNull(elements.loginLogout.userName) // ensure we're on the login screen, if not, reset app
+		.then(function (el) {
+			if (el == null) {
+				return driver
+					.resetApp()
+			}
+		})
 		.elementById(elements.loginLogout.userName)
 		.then(function (el) {
 			return el.getAttribute('value').then(function (value) {
@@ -286,6 +296,7 @@ Commons.prototype.loginQuick = function(){
 		.click()
 		.startTime('Log In')
 		.waitForElementById(elements.homeScreen.volunteers,30000)
+		.waitForElementToDisappearByClassName(elements.general.spinner)
 		.endTotalAndLogTime('Log In')
 		.wait_for_sql('getDatabaseName','databaseName')
 };
@@ -386,16 +397,22 @@ Commons.prototype.wait_for_sql = function(sql_query_name, recordset_object){
 };
 
 Commons.prototype.waitForElementToDisappearByClassName = function waitForElementToDisappearByClassName(className){
+	let counter = 0;
+	let start = new Date()
 	function recursive() {
 		return driver.elementByClassNameOrNull(className)
 			.then(function(el) {
 				if (el !== null) {
+					counter += 1;
 					return recursive()
+				} else if (counter > 300) {
+					return new Error('Spinner is not disappearing')
+				} else if ((new Date() - start) > (5*60*1000)) {
+					return new Error('Spinner did not disappear in 5 minutes')
 				}
 			})
 	}
 	return recursive()
 };
-
 
 module.exports = new Commons();

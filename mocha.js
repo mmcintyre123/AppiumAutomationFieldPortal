@@ -116,11 +116,11 @@ describe( 'Automation Test in Progress!'.green, function () {
 			let devlopeApp = true; //todo figure out what this is for
 
 			let run = require( './TestFiles.js' );
+				run.sampleTests( 'login_counts_homescreen' );
 				// run.sampleTests( 'add_edit_volunteer');
-				run.sampleTests( 'login_counts_homescreen');
-
+				// run.sampleTests( 'prospects' );
+				// run.sampleTests( 'inactive_vols' );
+				// run.sampleTests( 'login_counts_homescreen' );
 		} );
 	} );
-
-
 } );

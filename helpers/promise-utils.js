@@ -48,6 +48,7 @@ exports.printNames = exports.each(function (el, i) {
 });
 
 
+//this may not work as expected.  Need to test.  Use saveFirstNameAttributes instead.
 exports.saveAllNameAttributes = function (idLike, array_name, regexp) {
 
   console.log('saveAllNameAttributes', idLike, array_name, regexp)
@@ -68,11 +69,11 @@ exports.saveAllNameAttributes = function (idLike, array_name, regexp) {
 };
 
 // this will quit saving upon encounter of the first attribute not matching the given id part
-// speeds up saving primary targets or any time elements are listed in order and we only care about the first group
+// speeds up saving any time elements are listed in order and we only care about the first (presumably only) group that matches idLike
 exports.saveFirstNameAttributes = function (idLike, array_name, regexp, els) {
 
   config[array_name] = [];
-  console.log('Getting and saving current primary target elements'.white.bold)
+  console.log('Getting and saving first matching name attributes'.white.bold)
 
   return Q.Promise(function(resolve, reject, notify) {
     let promises = exports.each(function(el, i) {
@@ -85,11 +86,6 @@ exports.saveFirstNameAttributes = function (idLike, array_name, regexp, els) {
 
           config[array_name].push(attr);
 
-        } else if ((regexp.test(attr) == false) && (regexpPlusBtn.test(attr) == false)) {
-
-          // resolve after encountering the first element that is not a primary target or a plus button
-          resolve();
-
         } else if ((els.length - 1) == i && config[array_name].length == 0) {
 
           // reject if all elements tested and none match
@@ -97,7 +93,7 @@ exports.saveFirstNameAttributes = function (idLike, array_name, regexp, els) {
 
         } else if ((els.length - 1) == i && config[array_name].length != 0) {
 
-          //resolve if we're at the end of the elements list and we saved some primaries
+          //resolve if we're at the end of the elements list and we saved some
           resolve();
 
         }

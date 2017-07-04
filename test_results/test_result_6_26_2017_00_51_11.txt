@@ -1,8 +1,0 @@
-Test Passed: Login Quick
-Test Passed: Get home screen stats from SQL
-Test Passed: Active Count
-Test Passed: Active Percent
-Test Passed: Inactive Count
-Test Passed: Inactive Percent
-Test Passed: Re-activated Count
-Test Passed: Re-activated Percent

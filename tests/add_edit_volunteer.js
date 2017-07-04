@@ -35,49 +35,90 @@ module.exports = function () {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
-		config.lastCreatedVolunteer = {};
+
+		it('Set variables for test', function () {
+			// because beforeAll needs to run before we set these due to the need to have dateTime defined.
+			return driver
+				.sleep(1)
+				.then(function () {
+					config.lastCreatedVolunteer = {};
+					config.userId = {}
+					config.firstName = 'First' + config.dateTime;
+					config.lastName  = 'Last' + config.dateTime;
+					config.fullName = config.firstName + ' ' + config.lastName
+					config.email = config.firstName + '.' + config.lastName + '@callingfromhome.com'
+					config.state = 'AL'
+					config.firstNameReg = new RegExp(config.firstName)
+					config.lastNameReg = new RegExp(config.lastName)
+					config.emailReg = new RegExp(config.email)
+					config.stateReg = new RegExp(config.state)
+				})
+		});
 
 		it('Quick Login', function () {
 			return driver
 				.loginQuick()
 		});
 
-		it('Should add a volunteer', function () {
-			let firstName = 'First' + config.dateTime;
-			let lastName  = 'Last' + config.dateTime;
-			let email = firstName + '.' + lastName + '@callingfromhome.com'
-			let state = 'AL'
-
-			let firstNameReg = new RegExp(firstName)
-			let lastNameReg = new RegExp(lastName)
-			let emailReg = new RegExp(email)
-			let stateReg = new RegExp(state)
-
-			config.userId = {}
-
+		it('Open Volunteers, Add Volunteer', function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
-				.waitForElementById(elements.actionBar.addVolunteer, 15000)
+				.waitForElementById(elements.actionBar.addVolunteer, 30000)
 				.click()
+		});
+
+		it('Add a volunteer', function () {
+			return driver
 				.waitForElementById(elements.addVolunteer.firstName, 15000)
 				.click()
-				.sendKeys(firstName)
+				.sendKeys(config.firstName)
 				.elementById(elements.addVolunteer.lastName)
 				.click()
-				.sendKeys(lastName)
+				.sendKeys(config.lastName)
 				.elementByXPath(elements.addVolunteer.state) // state
 				.click()
 				.elementById(elements.addVolunteer.done) // todo scroll state list before picking
 				.click()
 				.elementById(elements.addVolunteer.email)
 				.click()
-				.sendKeys(email)
+				.sendKeys(config.email)
 				.elementById(elements.actionBar.save)
 				.click()
-				.waitForElementById(elements.volunteers.active, 90000)
+				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.waitForElementById(elements.volunteers.active, 60000)
+		});
 
-				//verify volunteer appears in database:
+		it('Volunteer appears in list', function () {
+
+			return driver
+				.elementByIdOrNull(elements.volunteers.active)
+				.then(function (el) {
+					if (el == null) {
+						return driver
+							.resetApp()
+							.loginQuick()
+							.elementById(elements.homeScreen.volunteers)
+							.click()
+					}
+				})
+				.elementById(elements.actionBar.search)
+				.click()
+				.sendKeys(config.fullName)
+				.sleep(1000) // make sure automation not too fast - wait for results (should be instant)
+				.elementByXPath(elements.volunteers.volunteer1.fullName)
+				.then(function (el) {
+					return el.getAttribute('name').then(function (name) {
+						assert.equal((config.fullName), name)
+					})
+				})
+		});
+
+		//todo add check for state and email appearing under the name in the list
+
+		it('Get new volunteer info from sql', function () {
+			return driver
+				.sleep(1)
 				.then(function () {
 					sqlQuery.getUserId()
 				})
@@ -97,19 +138,19 @@ module.exports = function () {
 		});
 
 		it('First name was as expected', function () {
-			config.lastCreatedVolunteer[0].firstname.should.match(firstNameReg)
+			config.lastCreatedVolunteer[0].firstname.should.match(config.firstNameReg)
 		});
 
 		it('Last name was as expected', function () {
-			config.lastCreatedVolunteer[0].lastname.should.match(lastNameReg)
+			config.lastCreatedVolunteer[0].lastname.should.match(config.lastNameReg)
 		});
 
 		it('State was as expected', function () {
-			config.lastCreatedVolunteer[0].state.should.match(stateReg)
+			config.lastCreatedVolunteer[0].state.should.match(config.stateReg)
 		});
 
 		it('Email was as expected', function () {
-			config.lastCreatedVolunteer[0].email.should.match(emailReg)
+			config.lastCreatedVolunteer[0].email.should.match(config.emailReg)
 		});
 
 		it('Volunteer was active as expected', function () {
@@ -129,9 +170,10 @@ module.exports = function () {
 			config.lastCreatedVolunteer[0].lastupdatedby.should.match(/^B93EFF44-69F9-4FD8-925C-518B74206895$/)
 		});
 
-		it('LogID was as expected', function () {
-			config.lastCreatedVolunteer[0].logid.should.match(/^1594.FLast06_23T15_38$/)
-		});
+		//todo build this from first and last name and org.
+		//it('LogID was as expected', function () {
+		//	config.lastCreatedVolunteer[0].logid.should.match(/^1594.FLast06_23T15_38$/)
+		//});
 
 	});
 };

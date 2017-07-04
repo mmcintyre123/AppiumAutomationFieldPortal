@@ -39,8 +39,15 @@ exports.iosSim2 = {
 exports.iosSim3 = {
 	'platformName'    : 'iOS',
 	'platformVersion' : '10.2',
-	'deviceName'      : 'iPhone 5',
-	'port'            : 4723
+	'deviceName'      : 'iPad Air'
+	// 'UDID' 	 		  : 'C12C70ED-2DE7-47CB-AA4F-61FB0B558E8D'
+};
+
+//ios Simulator #3
+exports.iosSim4 = {
+	'platformName'    : 'iOS',
+	'platformVersion' : '10.2',
+	'deviceName'      : 'iPad Pro (12.9 inch)'
 	// 'UDID' 	 		  : 'C12C70ED-2DE7-47CB-AA4F-61FB0B558E8D'
 };
 
