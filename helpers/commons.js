@@ -367,6 +367,7 @@ Commons.prototype.fullLogin = function(uname, pwd){
 		.wait_for_sql('getUserId', 'userId')
 		.then(function setDBName() {
 			sqlQuery.getDatabaseNameAndServer()
+			config.userIdReg = new RegExp(config.userId[0].userid)
 		})
 		.wait_for_sql('getDatabaseNameAndServer','databaseNameAndServer')
 		.elementById(elements.loginLogout.logIn) // LogIn Button

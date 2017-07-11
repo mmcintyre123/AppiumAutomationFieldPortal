@@ -158,9 +158,9 @@ describe( 'Automation Test in Progress!'.green, function () {
 
 			let run = require( './TestFiles.js' );
 				// run.sampleTests( 'login_counts_homescreen' );
-				// run.sampleTests( 'add_edit_volunteer');
+				run.sampleTests( 'add_edit_volunteer');
 				// run.sampleTests( 'prospects' );
-				run.sampleTests( 'inactive_vols' );
+				// run.sampleTests( 'inactive_vols' );
 				//run.sampleTests( 'login_counts_homescreen' );
 		} );
 	} );

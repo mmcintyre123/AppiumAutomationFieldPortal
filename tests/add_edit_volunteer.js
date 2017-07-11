@@ -44,7 +44,6 @@ module.exports = function () {
 				.sleep(1)
 				.then(function () {
 					config.lastCreatedVolunteer = {};
-					config.userId = {}
 					config.firstName = 'First' + config.dateTime;
 					config.lastName  = 'Last' + config.dateTime;
 					config.fullName = config.firstName + ' ' + config.lastName
@@ -181,11 +180,11 @@ module.exports = function () {
 
 		//todo make this programmatic
 		it('Coordinator was as expected', function () {
-			config.lastCreatedVolunteer[0].coordinator.should.match(/^B93EFF44-69F9-4FD8-925C-518B74206895$/)
+			config.lastCreatedVolunteer[0].coordinator.should.match(config.userIdReg)
 		});
 
 		it('lastupdatedby was as expected', function () {
-			config.lastCreatedVolunteer[0].lastupdatedby.should.match(/^B93EFF44-69F9-4FD8-925C-518B74206895$/)
+			config.lastCreatedVolunteer[0].lastupdatedby.should.match(config.userIdReg)
 		});
 
 		//todo build this from first and last name and org.
