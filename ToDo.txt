@@ -1,6 +1,7 @@
 To do:
 
-	> make framework run in prod or test
+DONE	> make framework run in prod or test - need to clean up queries.js
+	> move project to bitbucket so we can make it private so I can add queries.js to version control.
 
 	> Create more tests cases:
 
@@ -18,7 +19,7 @@ done	6) Add new volunteer
 
 done > possible to set org of query conditionally?
 	> change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
-	> everywhere we check for attributes of an element in the list, also assert the element is visible (if expected to be) - risk of false positives
+	> everywhere we check for elements to be present/absent in a list, must assert the element is visible/invisible -- element may not appear, but it is still there, only hidden.  So we can't verify an element is present based on it's id - must make sure the "visible" attribute is true.
 	> make sure asserts are like assert.equal(actual, expected)
 	> Create test user for FP login and dataset - active, inactive, prospects
 	> State selection - figure out how to scroll

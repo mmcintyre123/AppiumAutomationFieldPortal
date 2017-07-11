@@ -25,6 +25,7 @@
     "yiewd": "*"
   },
   "dependencies": {
+    "cities": "^1.1.2",
     "expect.js": "^0.3.1",
     "fs-extra": "^1.0.0",
     "image-size": "^0.5.5",
@@ -33,6 +34,7 @@
     "mute": "^2.0.6",
     "pryjs": "^1.0.3",
     "resize-img": "^1.1.2",
-    "sinon": "^2.3.4"
+    "sinon": "^2.3.4",
+    "us-zcta-counties": "0.0.2"
   }
 }

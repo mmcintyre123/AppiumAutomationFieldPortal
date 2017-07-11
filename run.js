@@ -26,7 +26,7 @@ for (var i in args ) {
 	var i   = Number( i );
 
 	switch ( arg ) {
-		case '-sim' : {
+		case '--sim' : {
 			appium = childProcess.spawn( 'appium', [
 				//'-p','4725', //non-default args
 				//'-cp','4725', //non-default args
@@ -58,7 +58,8 @@ for (var i in args ) {
 			]);
 			break;
 		}
-		case '-os' : {
+
+		case '--os' : {
 			if ( args[ i + 1 ] !== undefined ) {
 				if ( args[ i + 1 ].indexOf( 'android' ) != -1 ) {
 					appium = childProcess.spawn( 'appium', [
@@ -96,7 +97,7 @@ for (var i in args ) {
 				}
 
 			} else {
-				throw 'You did not specify an os for -os';
+				throw 'You did not specify an os for --os';
 			}
 
 			break;
@@ -118,7 +119,7 @@ appium.stdout.on( 'data', function ( data ) {
 	}
 
 	if ( stripColors( buff.toString( 'utf8' ) ) === 'info: Console LogLevel: debug\n' && !loaded ) {
-	
+
 		loaded = true;
 
 		var mocha = childProcess.spawn( 'mocha', args );

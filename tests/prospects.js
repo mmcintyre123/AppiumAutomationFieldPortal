@@ -34,10 +34,14 @@ module.exports = function () {
 		let firstName, lastName, fullName, email, state, phone;
 		config.searchResults = []
 
-		it('Login Quick', function () {
+		it('Full Login', function () {
 			return driver
-				.loginQuick()
+				.fullLogin()
 		});
+		//it('Quick Login', function () {
+		//	return driver
+		//		.loginQuick()
+		//});
 
 		it('Navigate to prospects list (prospects tab highlighted after selecting)', function () {
 			return driver
@@ -68,27 +72,39 @@ module.exports = function () {
 				.waitForElementByXPath(elements.prospectDetails.firstAndLastName, 10000) //first and last name
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						fullName = attr;
-						firstName = attr.split(/\s+/).shift()
-						lastName = attr.split(/\s+/).pop()
+						if (attr != null) {
+							fullName = attr.trim();
+						}
+						if (attr != null) {
+							firstName = attr.trim().split(/\s+/).shift();
+						}
+						if (attr != null) {
+							lastName = attr.trim().split(/\s+/).pop();
+						}
 					})
 				})
 				.elementById(elements.prospectDetails.email)
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						email = attr;
+						if (attr != null) {
+							email = attr.trim();
+						}
 					})
 				})
 				.elementById(elements.prospectDetails.phone)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (attr) {
-						phone = attr;
+						if (attr != null) {
+							phone = attr.trim();
+						}
 					})
 				})
 				.elementByXPath(elements.prospectDetails.address)
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						state = attr.match(/\w+(?=[\s]{1})/g)[0]
+						if (attr != null) {
+							state = attr.trim().match(/\w+(?=[\s]{1})/g)[0];
+						}
 					})
 				})
 		});
@@ -98,6 +114,15 @@ module.exports = function () {
 				.elementById(elements.actionBar.addAsVol)
 				.click()
 				.waitForElementById(elements.actionBar.save, 10000)
+				.then(function () {
+					if (email == '' || email == elements.prospectDetails.email) {
+						return driver
+							.elementById(elements.addVolunteer.email)
+							.click()
+							.sendKeys(firstName + '.' + lastName + (Math.floor(Math.random() * 10000)) + '@callingfromhome.com')
+					}
+				})
+				.elementById(elements.actionBar.save)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.actionBar.edit, 20000)
@@ -114,8 +139,8 @@ module.exports = function () {
 				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[1]') //first and last name
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(firstName.trim(), attr.split(/\s+/).shift().trim())
-						assert.equal(lastName.trim(), attr.split(/\s+/).pop().trim())
+						assert.equal(firstName, attr.trim().split(/\s+/).shift())
+						assert.equal(lastName, attr.trim().split(/\s+/).pop())
 					})
 				})
 		});
@@ -125,7 +150,7 @@ module.exports = function () {
 				.elementById(elements.vol_details.email)
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(email, attr)
+						assert.equal(email, attr.trim())
 					})
 				})
 		});
@@ -135,7 +160,9 @@ module.exports = function () {
 				.elementById(elements.vol_details.phone)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (attr) {
-						assert.equal(phone, attr)
+						if (attr != null) {
+							assert.equal(phone, attr.trim())
+						}
 					})
 				})
 		});
@@ -145,7 +172,7 @@ module.exports = function () {
 				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[3]') //state
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(state, attr.match(/\w+(?=[\s]{1})/g)[0])
+						assert.equal(state, attr.trim().match(/\w+(?=[\s]{1})/g)[0])
 					})
 				})
 				.back()

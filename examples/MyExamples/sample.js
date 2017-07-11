@@ -62,7 +62,7 @@ module.exports = function () {
 							config.theseHouses.push(config.housesWithMoreThan1Primary[i].HouseNum)
 						}
 					}
-					eval(require('pryjs').it)
+					// eval(require('pryjs').it)
 				})
 		});
 

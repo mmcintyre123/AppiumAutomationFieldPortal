@@ -6,8 +6,10 @@ module.exports = function () {
 	let   wd            = require("wd");
 	let   assert        = require('assert');
 	let   asserters     = wd.asserters;
+	let   cities        = require('cities');
+	let   counties      = require('us-zcta-counties');
 	let   _             = require('underscore');
-	let   childProcess  = require( 'child_process' );
+	let   childProcess  = require('child_process');
 	let   clip          = require('clipboardy');
 	let   Q             = require('q');
 	let   fsExtra       = require('fs-extra');
@@ -36,7 +38,7 @@ module.exports = function () {
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Set variables for test', function () {
+		it('Sets variables for test', function () {
 			// because beforeAll needs to run before we set these due to the need to have dateTime defined.
 			return driver
 				.sleep(1)
@@ -52,12 +54,20 @@ module.exports = function () {
 					config.lastNameReg = new RegExp(config.lastName)
 					config.emailReg = new RegExp(config.email)
 					config.stateReg = new RegExp(config.state)
+
+					let theseCities = cities.findByState(config.state).filter(function nonBlanks (city) {
+						return city.city != '' && city.zipcode != ''
+					})
+					let rand = Math.floor((Math.random() * theseCities.length) + 0);
+					config.thisCity = theseCities[rand].city
+					config.thisZip = theseCities[rand].zipcode
+					config.thisCounty = counties.find({zip: config.thisZip}).county
 				})
 		});
 
-		it('Quick Login', function () {
+		it('Full Login', function () {
 			return driver
-				.loginQuick()
+				.fullLogin()
 		});
 
 		it('Open Volunteers, Add Volunteer', function () {
@@ -71,18 +81,27 @@ module.exports = function () {
 		it('Add a volunteer', function () {
 			return driver
 				.waitForElementById(elements.addVolunteer.firstName, 15000)
-				.click()
-				.sendKeys(config.firstName)
+					.click()
+					.sendKeys(config.firstName)
 				.elementById(elements.addVolunteer.lastName)
-				.click()
-				.sendKeys(config.lastName)
-				.elementByXPath(elements.addVolunteer.state) // state
-				.click()
-				.elementById(elements.addVolunteer.done) // todo scroll state list before picking
-				.click()
+					.click()
+					.sendKeys(config.lastName)
+				.elementById(elements.addVolunteer.city)
+					.click()
+					.sendKeys(config.thisCity) // random city
+				.elementByXPath(elements.addVolunteer.state)
+					.click()
+					.elementById(elements.addVolunteer.done) // todo scroll state list before picking
+					.click()
+				.elementById(elements.addVolunteer.zip)
+					.click()
+					.sendKeys(config.thisZip)
+				.elementById(elements.addVolunteer.county)
+					.click()
+					.sendKeys(config.thisCounty)
 				.elementById(elements.addVolunteer.email)
-				.click()
-				.sendKeys(config.email)
+					.click()
+					.sendKeys(config.email)
 				.elementById(elements.actionBar.save)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
@@ -90,7 +109,6 @@ module.exports = function () {
 		});
 
 		it('Volunteer appears in list', function () {
-
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then(function (el) {

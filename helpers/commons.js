@@ -9,6 +9,7 @@ let fs           = require('fs');
 let fsExtra      = require('fs-extra');
 let assert       = require('assert');
 let pry          = require('pryjs');
+let creds        = require('../credentials');
 let config       = require('./config');
 let store        = require('./Store');
 let elements     = require('./elements');
@@ -16,7 +17,7 @@ let sqlQuery     = require('./queries');
 let commons      = require('./commons');
 let _p           = require('./promise-utils');
 let intercept    = require('intercept-stdout');
-let childProcess = require( 'child_process' );
+let childProcess = require('child_process');
 let Mocha        = require('mocha');
 let mocha        = new Mocha({});
 let driver       = config.driver;
@@ -87,12 +88,7 @@ Commons.prototype.beforeAll = function(){
 
 		let elements = config.elements;
 		let desired  = config.desired;
-		config.thisUser = ''
-		config.testResults = {};
-		config.testResults.Passed = [];
-		config.testResults.Failed = [];
-		config.testResults.Other = [];
-
+		config.testResults = [];
 
 		require("./logging").configure(driver);
 
@@ -184,20 +180,18 @@ Commons.prototype.afterEachIt = function(){
 		//test stuff - screenshot on failure, log results to file and store in object to console.log at the end.
 		if (this.currentTest.state == 'failed') {
 			console.log(('\n\t' + this.currentTest.err.message).red + '\n')
-			//console.log(('\n\t' + this.currentTest.err.message.match(/^.*?(?=Error)/gi)).red)
-			//console.log(('\t' + this.currentTest.err.message.match(/Error.*/gi) + '\n').red)
 			config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n')
-			config.testResults.Failed.push(thisTest)
+			config.testResults.push('\u2717  '.red + thisTest)
 			return driver
 				.takeScreenshotMethod(thisTest);
 
 		} else if (this.currentTest.state == 'passed') {
 			config.wStreamTestResultFile.write('Test Passed: ' + thisTest + '\n')
-			config.testResults.Passed.push(thisTest)
+			config.testResults.push('\u2713  '.green + thisTest)
 
 		} else {
 			config.wStreamTestResultFile.write('Test ' + this.currentTest.state + ' :' + thisTest + '\n')
-			config.testResults.Other.push(thisTest);
+			config.testResults.push('\u003F  '.yellow + thisTest);
 
 		}
     });
@@ -214,17 +208,13 @@ Commons.prototype.afterAll = function(){
 			.quit()
 			.finally(function() {
 
-				let unhook_intercept = intercept(function (txt) {
-					return txt.replace(/.*undefined.*/i, '');
-				})
+				//let unhook_intercept = intercept(function (txt) {
+				//	return txt.replace(/.*undefined.*/i, '');
+				//})
 
 				console.log('\n\n******* TEST RESULTS *******\n'.white)
-				config.testResults.Passed.map(function (thisTest) {
-					return console.log('\u2713  '.green + thisTest)
-				})
-
-				config.testResults.Failed.map(function (thisTest) {
-					return console.log('\u2717  '.red + thisTest)
+				config.testResults.map(function (thisTest) {
+					return console.log(thisTest)
 				})
 				console.log('\n****************************'.white)
 
@@ -279,34 +269,65 @@ Commons.prototype.loginQuick = function(){
 					.resetApp()
 			}
 		})
-		.elementById(elements.loginLogout.userName)
-		.then(function (el) {
-			return el.getAttribute('value').then(function (value) {
-				config.thisUser = value;
-			}) //save the username for this test in case we need it.
-		})
 		.then(function getUserId() {
 			sqlQuery.getUserId()
 		})
 		.wait_for_sql('getUserId', 'userId')
 		.then(function setDBName() {
-			sqlQuery.getDatabaseName()
+			sqlQuery.getDatabaseNameAndServer()
 		})
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
-		.waitForElementById(elements.homeScreen.volunteers,30000)
 		.waitForElementToDisappearByClassName(elements.general.spinner)
+		.waitForElementById(elements.homeScreen.volunteers,30000)
 		.endTotalAndLogTime('Log In')
-		.wait_for_sql('getDatabaseName','databaseName')
+		.wait_for_sql('getDatabaseNameAndServer','databaseNameAndServer')
 };
 
-// todo - this is broken because of WebDriverAgent update?  See issue on github https://github.com/facebook/WebDriverAgent/issues/624
+// todo - this is broken because of WebDriverAgent update?  See issue on github https://github.com/facebook/WebDriverAgent/issues/606 and https://github.com/facebook/WebDriverAgent/issues/603
 Commons.prototype.fullLogin = function(uname, pwd){
 	console.log('FULL LOGIN'.green.bold.underline);
-	config.thisUser = uname; //should be like test_1654wseward.
+
+	//set uname
+		if (config.ENV == 'test') {
+
+			if (uname == undefined) {
+				if(config.thisUser == undefined){
+					throw 'config.thisUser was undefined, supply the info when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.'
+				} else {
+					uname = 'test_' + config.thisUser
+				}
+			}
+
+		} else if (config.ENV == 'prod') {
+
+			if (uname == undefined) {
+				if(config.thisUser == undefined){
+					throw 'config.thisUser was undefined, supply the info when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.'
+				} else {
+					uname = config.thisUser
+				}
+			}
+		}
+
+	//set pwd
+		if (pwd == undefined) {
+			if (config.pwd == undefined) {
+				throw 'config.pwd was undefined, supply the info when executing tests, e.g.: --pwd qwerty09, or pass it into the login function.'
+			} else {
+				pwd = config.pwd
+			}
+		}
+
 	return driver
-		.sleep(1000)
+		.elementByIdOrNull(elements.loginLogout.userName) // ensure we're on the login screen, if not, reset app
+		.then(function (el) {
+			if (el == null) {
+	return driver
+					.resetApp()
+			}
+		})
 		.then(function () {
 			if (driver.elementByClassNameIfExists('XCUIElementTypeAlert')) {
 				driver.acceptAlert()
@@ -314,32 +335,13 @@ Commons.prototype.fullLogin = function(uname, pwd){
 				return driver
 			}
 		})
-		.waitForElementById('etLoginUsername') // UserName
+		.waitForElementById(elements.loginLogout.userName)
 			.clear()
 			.sendKeys(uname)
-		.hideKeyboard()
-		// Click away if we're in iOS:
-		.then(function () {
-			if(config.desired.platformName == 'iOS') {
-				return driver
-						.elementByClassName('XCUIElementTypeImage')
-						.click()
-			}
-		})
-		.waitForElementById('etPassword') // password
+		.waitForElementById(elements.loginLogout.password)
 			.click()
 			.clear()
 			.sendKeys(pwd)
-		.hideKeyboard()
-		.sleep(500)
-		// Click away if we're in iOS:
-		.then(function () {
-			if(config.desired.platformName == 'iOS') {
-				return driver
-						.elementByClassName('XCUIElementTypeImage')
-						.click()
-			}
-		})
 		// check if "remember me" is already checked.
 		.then(function () {
 			if (config.desired.platformName == 'Android') {
@@ -359,11 +361,19 @@ Commons.prototype.fullLogin = function(uname, pwd){
 						     .click()
 			}
 		})
-		.elementById('btnLogin') // LogIn Button
+		.then(function getUserId() {
+			sqlQuery.getUserId()
+		})
+		.wait_for_sql('getUserId', 'userId')
+		.then(function setDBName() {
+			sqlQuery.getDatabaseNameAndServer()
+		})
+		.wait_for_sql('getDatabaseNameAndServer','databaseNameAndServer')
+		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
-		// will be different depending on whether the user has multiple orgs:
-		.waitForElementById(elements.homeScreen.walkbooks, 10000).should.eventually.exist
+		.waitForElementToDisappearByClassName(elements.general.spinner, 30000)
+		.waitForElementById(elements.homeScreen.volunteers,30000)
 		.endTotalAndLogTime('Log In')
 };
 

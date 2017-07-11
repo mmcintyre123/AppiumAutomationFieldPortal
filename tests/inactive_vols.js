@@ -34,9 +34,9 @@ module.exports = function () {
 		let firstName, lastName, fullName, email, state, phone, width, height;
 		config.searchResults = []
 
-		it('Login Quick', function () {
+		it('Full Login', function () {
 			return driver
-				.loginQuick()
+				.fullLogin()
 		});
 
 		it('Navigate to inactive volunteer list - tab is highlighted after selecting', function () {
@@ -46,7 +46,7 @@ module.exports = function () {
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.volunteers.inActive,10000)
 				.click()
-				.sleep(2000) // time for tab to select
+				.sleep(2000) // plenty of time for tab to select
 				.elementById(elements.volunteers.inActive)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (value) {
@@ -68,9 +68,9 @@ module.exports = function () {
 				.waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						fullName = attr;
-						firstName = attr.split(/\s+/).shift()
-						lastName = attr.split(/\s+/).pop()
+						fullName = attr.trim();
+						firstName = attr.trim().split(/\s+/).shift()
+						lastName = attr.trim().split(/\s+/).pop()
 					})
 				})
                 .back()
@@ -180,8 +180,8 @@ module.exports = function () {
                 .elementById(elements.actionBar.cancel)
                 .click()
         });
-        
-        it('On active tab', function () {
+
+        it('Switch to active tab', function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(function (el) {
@@ -194,14 +194,22 @@ module.exports = function () {
                             .waitForElementToDisappearByClassName(elements.general.spinner)
                             .waitForElementById(elements.volunteers.active, 10000)
                             .click()
+                            .elementById(elements.volunteers.active)
+                            .then(function (el) {
+                                return el.getAttribute('value').then(function (value) {
+                                    assert.equal(value,1)
+                                })
+                            })
                     } else {
-                        return el.getAttribute('value').then(function (value) {
-                            if (value != 1) {
-                                return driver
-                                    .elementById(elements.volunteers.active)
-                                    .click()
-                            }
-                        })
+                        return driver
+                            .elementById(elements.volunteers.active)
+                            .click()
+                            .elementById(elements.volunteers.active)
+                            .then(function (el) {
+                                return el.getAttribute('value').then(function (value) {
+                                    assert.equal(value,1)
+                                })
+                            })
                     }
                 })
         });

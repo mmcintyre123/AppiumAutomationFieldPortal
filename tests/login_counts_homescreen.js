@@ -32,9 +32,9 @@ module.exports = function () {
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Login Quick', function () {
+		it('Full Login', function () {
 			return driver
-				.loginQuick()
+				.fullLogin()
 		});
 
 		it('Get home screen stats from SQL', function () {
@@ -46,7 +46,7 @@ module.exports = function () {
 				.wait_for_sql('getHomeScreenStats', 'homeScreenStats')
 		});
 
-		it('Volunteer Base Count/String', function () {
+		it('Volunteer Base Count, String', function () {
 			return driver
 				.elementByXPath(elements.homeScreen.volBaseString)
 				.then(function (el) {

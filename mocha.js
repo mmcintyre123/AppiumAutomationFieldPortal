@@ -19,7 +19,7 @@ let desired;
 		var i   = Number( i );
 
 		switch ( arg ) {
-			case '-sim' : {
+			case '--sim' : {
 				if ( args[ i + 1 ] !== undefined ) {
 					simulator = true;
 					desired   = _.clone(require( './helpers/caps' )[ args[ i + 1 ] ]);
@@ -27,52 +27,93 @@ let desired;
 					config.set( {
 						'os'      : args[ i + 1 ],
 						'desired' : desired,
-						'sim'     : true,
-						'newCommandTimeout' : args.includes("dbg") ? 1800 : 120, // in seconds - 30 min or 2 min
-						'launchTimeout' : 180000  // in ms - 3 minutes todo add these below
+						'sim'     : true
 					} );
+
+					config.desired.newCommandTimeout = args.includes("--dbg") ? 1800 : 120, // in seconds - 30 min or 2 min
+					config.desired.launchTimeout = 180000  // in ms - 3 minutes
+
+				} else {
+					throw 'You did not specify a simulator device, see caps.js for available devices!'
 				}
 
 				break;
-		}
+			}
 
-			case '-time' : {
+			case '--time' : {
 				if ( args[ i + 1 ] !== undefined ) {
 					timeout = args[ i + 1 ];
 				} else {
-					throw 'You did not specify a timeout for -timeout';
+					throw 'You did not specify a timeout for -time';
 				}
 
 				break;
 			}
 
-			case '-reset' : {
+			case '--reset' : {
 				if ( args[ i + 1 ] !== undefined ) {
 					config.set( {
-						'reset' : true
+						'fullReset' : true
 					} );
 				}
 
 				break;
 			}
 
-			case '-os' : {
+			case '--os' : {
 				if ( args[ i + 1 ] !== undefined ) {
 					desired = _.clone(require( './helpers/caps' )[ args[ i + 1 ] ]);
 
 					config.set( {
 						'os'      : args[ i + 1 ],
 						'desired' : desired,
-						'sim'     : false,
-						'newCommandTimeout' : args.includes("dbg") ? 1800 : 120, // in seconds - 30 min or 2 min
-						'launchTimeout' : 180000  // in ms - 3 minutes todo add these below
+						'sim'     : false
 					} );
+
+					config.desired.newCommandTimeout = args.includes("--dbg") ? 1800 : 120, // in seconds - 30 min or 2 min
+					config.desired.launchTimeout = 180000  // in ms - 3 minutes
+
+
 				} else {
-					throw 'You did not specify a os for -os';
+					throw 'You did not specify an os for --os';
 				}
 
 				break;
 			}
+
+			case '--ENV' : {
+				if ( args[ i + 1 ] !== undefined ) {
+					config.set( {
+						'ENV' : args[ i + 1 ]
+					});
+				} else {
+					throw 'You did not specify an environment, for example, --ENV test';
+				}
+				break;
+			}
+
+			case '--uname' : {
+				if ( args[ i + 1 ] !== undefined ) {
+					config.set( {
+						'thisUser' : args[ i + 1 ]
+					});
+				} else {
+					throw 'You did not specify a user name to use for the initial login! For example: --uname mmcintyre';
+				}
+				break;
+			}
+
+			case '--pwd' : {
+				if ( args[ i + 1 ] !== undefined ) {
+					config.set( {
+						'pwd' : args[ i + 1 ]
+					});
+				} else {
+					throw 'You did not specify a password to use for the initial login! For example: --pwd qwerty09';
+				}
+				break;
+			}
+
 		}
 	}
 
@@ -116,11 +157,11 @@ describe( 'Automation Test in Progress!'.green, function () {
 			let devlopeApp = true; //todo figure out what this is for
 
 			let run = require( './TestFiles.js' );
-				run.sampleTests( 'login_counts_homescreen' );
+				// run.sampleTests( 'login_counts_homescreen' );
 				// run.sampleTests( 'add_edit_volunteer');
 				// run.sampleTests( 'prospects' );
-				// run.sampleTests( 'inactive_vols' );
-				// run.sampleTests( 'login_counts_homescreen' );
+				run.sampleTests( 'inactive_vols' );
+				//run.sampleTests( 'login_counts_homescreen' );
 		} );
 	} );
 } );

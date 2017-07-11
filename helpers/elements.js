@@ -1,4 +1,5 @@
-let apps = require('./apps.js');
+let apps   = require('./apps.js');
+let config = require('./config');
 
 // todo change the file structure here to be more like elements.walkbooks.surveys
 // rather than elements.surveys -- i.e. grouped by app area.
@@ -41,8 +42,8 @@ let apps = require('./apps.js');
 	exports.homeScreen = {
         'events'             : '',
         'surveys'            : '',
-        'volunteers'         : 'btnVolunteers',
-        'volBaseString'       : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[1]',
+        'volunteers'         : config.ENV == 'prod' ? 'btnVolunteers' : 'btn landing volunteers',
+        'volBaseString'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[1]',
         'activeCount'        : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[4]',
         'activePercent'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[5]',
         'inActiveCount'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[8]',
