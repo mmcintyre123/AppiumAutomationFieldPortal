@@ -7,9 +7,11 @@ let assert        = require( 'assert' );
 let serverConfigs = require( './helpers/appium-servers' );
 let args          = process.argv.slice( 2 );
 let config        = require( './helpers/config' );
-let	_             = require('underscore');
+let _             = require('underscore');
 let actions       = require( './helpers/actions' );
 let elements      = require( './helpers/elements' );
+let sqlQuery      = require('./helpers/queries');
+
 let timeout       = 9999000;
 let simulator     = false;
 let desired;
@@ -20,7 +22,7 @@ let desired;
 
 		switch ( arg ) {
 			case '--sim' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					simulator = true;
 					desired   = _.clone(require( './helpers/caps' )[ args[ i + 1 ] ]);
 
@@ -41,7 +43,7 @@ let desired;
 			}
 
 			case '--time' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					timeout = args[ i + 1 ];
 				} else {
 					throw 'You did not specify a timeout for -time';
@@ -51,7 +53,7 @@ let desired;
 			}
 
 			case '--reset' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					config.set( {
 						'fullReset' : true
 					} );
@@ -61,7 +63,7 @@ let desired;
 			}
 
 			case '--os' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					desired = _.clone(require( './helpers/caps' )[ args[ i + 1 ] ]);
 
 					config.set( {
@@ -82,7 +84,7 @@ let desired;
 			}
 
 			case '--ENV' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					config.set( {
 						'ENV' : args[ i + 1 ]
 					});
@@ -93,7 +95,7 @@ let desired;
 			}
 
 			case '--uname' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					config.set( {
 						'thisUser' : args[ i + 1 ]
 					});
@@ -104,7 +106,7 @@ let desired;
 			}
 
 			case '--pwd' : {
-				if ( args[ i + 1 ] !== undefined ) {
+				if ( args[ i + 1 ] !== undefined && args[ i + 1 ].substring(0,2) !== '--') {
 					config.set( {
 						'pwd' : args[ i + 1 ]
 					});
@@ -113,8 +115,11 @@ let desired;
 				}
 				break;
 			}
-
 		}
+	}
+
+	if (config.ENV === undefined) {
+		throw new Error('You must specify an environment (ENV) when executing tests.')
 	}
 
 let driver = wd.promiseChainRemote( serverConfigs.local );
@@ -152,13 +157,15 @@ describe( 'Automation Test in Progress!'.green, function () {
 				run.logins( 'loginSanboxSmokeTest' );
 		} );
 */
+
 		describe( 'Run icon color tests'.green, function () {
 
 			let devlopeApp = true; //todo figure out what this is for
 
 			let run = require( './TestFiles.js' );
 				// run.sampleTests( 'login_counts_homescreen' );
-				run.sampleTests( 'add_edit_volunteer');
+				// run.sampleTests( 'add_edit_volunteer');
+				run.sampleTests( 'texting' );
 				// run.sampleTests( 'prospects' );
 				// run.sampleTests( 'inactive_vols' );
 				//run.sampleTests( 'login_counts_homescreen' );

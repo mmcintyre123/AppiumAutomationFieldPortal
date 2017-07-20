@@ -40,9 +40,10 @@ let config = require('./config');
 
 	// by ID
 	exports.homeScreen = {
-        'events'             : '',
-        'surveys'            : '',
-        'volunteers'         : config.ENV == 'prod' ? 'btnVolunteers' : 'btn landing volunteers',
+        'events'             : 'btnEvents',
+        'surveys'            : 'btnSurveys',
+        'volunteers'         : 'btnVolunteers',
+        'text'               : 'btnText',
         'volBaseString'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[1]',
         'activeCount'        : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[4]',
         'activePercent'      : '//*/XCUIElementTypeOther/XCUIElementTypeStaticText[5]',

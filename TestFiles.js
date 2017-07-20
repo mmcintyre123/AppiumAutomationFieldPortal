@@ -13,6 +13,8 @@
 				return require( './tests/prospects.js')();
 			case 'inactive_vols' :
 				return require( './tests/inactive_vols.js')();
+			case 'texting' :
+				return require( './tests/texting.js')();
 		}
 		console.log( 'No test case was selected!' );
 	};

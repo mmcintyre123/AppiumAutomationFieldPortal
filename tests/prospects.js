@@ -139,8 +139,8 @@ module.exports = function () {
 				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[1]') //first and last name
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(firstName, attr.trim().split(/\s+/).shift())
-						assert.equal(lastName, attr.trim().split(/\s+/).pop())
+						assert.equal(attr.trim().split(/\s+/).shift(), firstName)
+						assert.equal(attr.trim().split(/\s+/).pop(), lastName)
 					})
 				})
 		});
@@ -150,7 +150,7 @@ module.exports = function () {
 				.elementById(elements.vol_details.email)
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(email, attr.trim())
+						assert.equal(attr.trim(), email)
 					})
 				})
 		});
@@ -161,7 +161,7 @@ module.exports = function () {
 				.then(function (el) {
 					return el.getAttribute('value').then(function (attr) {
 						if (attr != null) {
-							assert.equal(phone, attr.trim())
+							assert.equal(attr.trim(), phone)
 						}
 					})
 				})
@@ -172,7 +172,7 @@ module.exports = function () {
 				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[3]') //state
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(state, attr.trim().match(/\w+(?=[\s]{1})/g)[0])
+						assert.equal(attr.trim().match(/\w+(?=[\s]{1})/g)[0], state)
 					})
 				})
 				.back()
@@ -214,7 +214,7 @@ module.exports = function () {
 				.elementByXPath(elements.volunteers.volunteer1.fullName)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (name) {
-						assert.equal((fullName.trim()), name.trim())
+						assert.equal(name.trim(), fullName.trim())
 					})
 				})
 		});

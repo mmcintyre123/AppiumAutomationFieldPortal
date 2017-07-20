@@ -31,7 +31,6 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-
 	//todo verify volunteer added in UI, active tab
 	describe("Tests adding and editing volunteers and related actions", function() {
 
@@ -107,6 +106,23 @@ module.exports = function () {
 				.waitForElementById(elements.volunteers.active, 60000)
 		});
 
+		//todo finish this
+		it.skip('Add a volunteer in a different state', function () {
+			return driver
+				.elementByIdOrNull(elements.actionBar.addVolunteer)
+				.then(function (el) {
+					if (el == null) {
+						return driver
+							.resetApp()
+							.loginQuick()
+							.elementById(elements.homeScreen.volunteers)
+							.click()
+							.waitForElementById(elements.actionBar.addVolunteer,10000)
+					}
+				})
+				.click()
+		});
+
 		it('Volunteer appears in list', function () {
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
@@ -126,7 +142,7 @@ module.exports = function () {
 				.elementByXPath(elements.volunteers.volunteer1.fullName)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (name) {
-						assert.equal((config.fullName), name)
+						assert.equal(name, config.fullName)
 					})
 				})
 		});

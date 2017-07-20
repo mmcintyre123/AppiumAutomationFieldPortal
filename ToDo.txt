@@ -1,7 +1,7 @@
 To do:
 
-DONE	> make framework run in prod or test - need to clean up queries.js
 	> move project to bitbucket so we can make it private so I can add queries.js to version control.
+	> Compare Android and iOS accessibility IDs and file issues in 33042.
 
 	> Create more tests cases:
 
@@ -10,19 +10,16 @@ done	9) Select Prospects
 done	10) Convert Prospect to volunteer (edited)
 done	7) Select Inactive volunteers
 done	8) Mark Inactive Volunteer Active [-- check counts update as well]
-		2) Verify Text Icon based on user permissions
+done	2) Verify Text Icon based on user permissions
 		4) Email Active Volunteer, verify volunteer history
 		5) Text Active Volunteer, verify volunteer history
 done	1) Login - Login Verify home page Metrics
 done	3) Select Volunteers 
 done	6) Add new volunteer
 
-done > possible to set org of query conditionally?
 	> change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
 	> everywhere we check for elements to be present/absent in a list, must assert the element is visible/invisible -- element may not appear, but it is still there, only hidden.  So we can't verify an element is present based on it's id - must make sure the "visible" attribute is true.
-	> make sure asserts are like assert.equal(actual, expected)
-	> Create test user for FP login and dataset - active, inactive, prospects
-	> State selection - figure out how to scroll
+		> State selection - figure out how to scroll
 	> Anytime we have a long wait statement, be sure to time the action.
 	> Make each test case as independent as possible - at the beginning expect to be on the required starting
 		point using elementByIdOrNull, and if not, reset app and go there.

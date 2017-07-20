@@ -38,6 +38,7 @@ wd.addPromiseChainMethod('waitForElementToDisappearByClassName',commons.waitForE
 wd.addPromiseChainMethod('getHousesWithMoreThan1Primary',sqlQuery.getHousesWithMoreThan1Primary);
 wd.addPromiseChainMethod('touchedHouses',sqlQuery.touchedHouses);
 wd.addPromiseChainMethod('wait_for_sql',commons.wait_for_sql);
+wd.addPromiseChainMethod('getUserRoles',sqlQuery.getUserRoles);
 
 
 exports.should = should;

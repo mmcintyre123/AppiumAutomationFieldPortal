@@ -102,7 +102,7 @@ Commons.prototype.beforeAll = function(){
 		} else if (config.desired.platformName == 'iOS' && config.sim == true) {
 			desired.app = require("./apps").iosSimApp;
 		} else {
-			throw "Commons beforeAll couldn't match device, environment, and args to available apps."
+			throw new Error("Commons beforeAll couldn't match device, environment, and args to available apps.")
 		}
 
 		if (process.env.SAUCE) {
@@ -294,7 +294,7 @@ Commons.prototype.fullLogin = function(uname, pwd){
 
 			if (uname == undefined) {
 				if(config.thisUser == undefined){
-					throw 'config.thisUser was undefined, supply the info when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.'
+					throw new Error('config.thisUser was undefined and no username was passed to the login function.  You must either supply the user name when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.')
 				} else {
 					uname = 'test_' + config.thisUser
 				}
@@ -304,17 +304,24 @@ Commons.prototype.fullLogin = function(uname, pwd){
 
 			if (uname == undefined) {
 				if(config.thisUser == undefined){
-					throw 'config.thisUser was undefined, supply the info when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.'
+					throw new Error('config.thisUser was undefined and no username was passed to the login function.  You must either supply the user name when executing tests, e.g.: --uname mmcintyre, or pass it into the login function.')
 				} else {
 					uname = config.thisUser
 				}
 			}
 		}
 
+	// redefine config.thisUser in case uname was passed to function
+		if (uname.substring(0,5) === 'test_') {
+			config.thisUser = uname.substring(5)
+		} else {
+			config.thisUser = uname
+		}
+
 	//set pwd
 		if (pwd == undefined) {
 			if (config.pwd == undefined) {
-				throw 'config.pwd was undefined, supply the info when executing tests, e.g.: --pwd qwerty09, or pass it into the login function.'
+				throw new Error('config.pwd was undefined, supply the info when executing tests, e.g.: --pwd qwerty09, or pass it into the login function.')
 			} else {
 				pwd = config.pwd
 			}
@@ -324,7 +331,7 @@ Commons.prototype.fullLogin = function(uname, pwd){
 		.elementByIdOrNull(elements.loginLogout.userName) // ensure we're on the login screen, if not, reset app
 		.then(function (el) {
 			if (el == null) {
-	return driver
+				return driver
 					.resetApp()
 			}
 		})
@@ -346,19 +353,19 @@ Commons.prototype.fullLogin = function(uname, pwd){
 		.then(function () {
 			if (config.desired.platformName == 'Android') {
 				return driver
-					     .elementById(elements.loginLogout.rememberMe)
-					     .getAttribute('checked')
+					.elementById(elements.loginLogout.rememberMe)
+					.getAttribute('checked')
 			} else if (config.desired.platformName == 'iOS') {
 				return driver
-					     .elementById(elements.loginLogout.rememberMe)
-					     .getAttribute('value')
+					.elementById(elements.loginLogout.rememberMe)
+					.getAttribute('value')
 			}
 		})
 		.then(function (attr) {
 			if (attr == false || attr == 'false') { // if remember me not checked do:
 				return driver
-						     .elementById(elements.loginLogout.rememberMe)
-						     .click()
+					.elementById(elements.loginLogout.rememberMe)
+					.click()
 			}
 		})
 		.then(function getUserId() {
