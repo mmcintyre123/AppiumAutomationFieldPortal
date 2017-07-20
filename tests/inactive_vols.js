@@ -232,7 +232,17 @@ module.exports = function () {
                     return el.getAttribute('name').then(function (name) {
                         assert.equal(name.trim(), fullName.trim())
                     })
+                }).then(function () {
+
+                    config.homeScreenStats[0].activecount        += 1
+                    config.homeScreenStats[0].activepercent       = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+                    config.homeScreenStats[0].inactivecount      -= 1
+                    config.homeScreenStats[0].inactivepercent     = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+                    config.homeScreenStats[0].reactivatedcount   += 1
+                    config.homeScreenStats[0].reactivatedpercent  = Math.round((config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+                    
                 })
+                
         });
 	});
 };

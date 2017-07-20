@@ -404,10 +404,10 @@ Commons.prototype.wait_for_sql = function(sql_query_name, recordset_object){
 
 					console.log('Waiting for ' + sql_query_name + ' to return....\n'
 						+ sql_query_name + '.length = ' + Object.keys(config[recordset_object] || []).length)
-				} else if (counter > 1 && counter < 30) {
+				} else if (counter > 1 && counter < 10) {
 					console.log('Waiting...')
-				} else if (counter > 30) {
-					reject(new Error('SQL Query ' + sql_query_name + ' did not return within one minute.'))
+				} else if (counter > 10) {
+					reject(new Error('SQL Query ' + sql_query_name + ' did not return within twenty seconds.'))
 				}
 			}
 		})();

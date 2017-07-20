@@ -51,7 +51,7 @@ module.exports = function () {
 				.elementByXPath(elements.homeScreen.volBaseString)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (string) {
-						assert.equal(string, config.homeScreenStats[0].volunteerbase)
+						assert.equal(Number(string.match(/\d+/g)), config.homeScreenStats[0].volunteerbase)
 					})
 				})
 		});
@@ -115,6 +115,5 @@ module.exports = function () {
 					})
 				})
 		});
-
 	});
 };

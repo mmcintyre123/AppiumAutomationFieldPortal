@@ -7,8 +7,10 @@
 				return require( './tests/sample.js' )();
 			case 'add_edit_volunteer' :
 				return require( './tests/add_edit_volunteer.js')();
-			case 'login_counts_homescreen' :
-				return require( './tests/login_counts_homescreen.js')();
+			case 'login_counts_homescreen_initial' :
+				return require( './tests/login_counts_homescreen_initial.js')();
+			case 'login_counts_homescreen_final' :
+				return require( './tests/login_counts_homescreen_final.js')();
 			case 'prospects' :
 				return require( './tests/prospects.js')();
 			case 'inactive_vols' :

@@ -64,6 +64,8 @@ module.exports = function () {
 		});
 
 		it('Full Login', function () {
+			this.retries = 1
+
 			return driver
 				.fullLogin()
 		});
@@ -104,6 +106,11 @@ module.exports = function () {
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.volunteers.active, 60000)
+				.then(function () {
+					config.homeScreenStats[0].volunteerbase +=1
+					config.homeScreenStats[0].activecount +=1
+					console.log('volunteerbase and activecount should now be ' + config.homeScreenStats[0].volunteerbase + ', ' + config.homeScreenStats[0].activecount + ' respectively.')
+				})
 		});
 
 		//todo finish this

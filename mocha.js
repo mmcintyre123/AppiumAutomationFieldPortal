@@ -163,12 +163,12 @@ describe( 'Automation Test in Progress!'.green, function () {
 			let devlopeApp = true; //todo figure out what this is for
 
 			let run = require( './TestFiles.js' );
-				// run.sampleTests( 'login_counts_homescreen' );
-				// run.sampleTests( 'add_edit_volunteer');
-				run.sampleTests( 'texting' );
+				run.sampleTests( 'login_counts_homescreen_initial' );
+				run.sampleTests( 'add_edit_volunteer');
+				// run.sampleTests( 'texting' );
 				// run.sampleTests( 'prospects' );
-				// run.sampleTests( 'inactive_vols' );
-				//run.sampleTests( 'login_counts_homescreen' );
+				run.sampleTests( 'inactive_vols' );
+				run.sampleTests( 'login_counts_homescreen_final' );
 		} );
 	} );
 } );
