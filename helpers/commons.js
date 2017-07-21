@@ -110,12 +110,14 @@ Commons.prototype.beforeAll = function(){
 			desired.tags = ['sample'];
 		}
 		//clear and create screenshots, and loadTimeLogs directories
-		//fsExtra.removeSync('./screenShots')
-		//fsExtra.mkdirs('./screenShots')
-		//fsExtra.removeSync('./video')
-		//fsExtra.mkdirs('./video')
-		fsExtra.removeSync('./loadTimeLogs') // to clear out the load time file if necessary
+		fsExtra.removeSync('./screenShots')
+		fsExtra.mkdirs('./screenShots')
+		fsExtra.removeSync('./video')
+		fsExtra.mkdirs('./video')
+		fsExtra.removeSync('./loadTimeLogs')
 		fsExtra.mkdirs('./loadTimeLogs')
+		fsExtra.removeSync('./test_results')
+		fsExtra.mkdirs('./test_results')
 
 		// Open writeStream for logTime file using current local time
 		require('moment-timezone')
@@ -279,8 +281,10 @@ Commons.prototype.loginQuick = function(){
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
+		.sleep(1000) //give spinner time to appear
 		.waitForElementToDisappearByClassName(elements.general.spinner)
 		.waitForElementById(elements.homeScreen.volunteers,30000)
+		.waitForElementToDisappearByClassName(elements.general.spinner)
 		.endTotalAndLogTime('Log In')
 		.wait_for_sql('getDatabaseNameAndServer','databaseNameAndServer')
 };
@@ -380,8 +384,10 @@ Commons.prototype.fullLogin = function(uname, pwd){
 		.elementById(elements.loginLogout.logIn) // LogIn Button
 		.click()
 		.startTime('Log In')
-		.waitForElementToDisappearByClassName(elements.general.spinner, 30000)
+		.sleep(1000) // give spinner time to appear
+		.waitForElementToDisappearByClassName(elements.general.spinner)
 		.waitForElementById(elements.homeScreen.volunteers,30000)
+		.waitForElementToDisappearByClassName(elements.general.spinner)
 		.endTotalAndLogTime('Log In')
 };
 

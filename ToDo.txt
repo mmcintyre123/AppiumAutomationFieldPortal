@@ -20,13 +20,13 @@ done	6) Add new volunteer
 
 
 
-	> change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
-		In login counts test create objects for each count - should persist across all test sessions.
-		update the objects during testing:
+done  > change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
+done	In login counts test create objects for each count - should persist across all test sessions.
+done	update the objects during testing:
 done		- anytime we add a volunteer => active += 1, volBase += 1
 done		- activate someone from inactive => re-activated += 1, active volunteers += 1, inactive -= 1
 			- mark a volunteer inactive => active -= 1, inactive += 1
-		At the end of testing verify counts with both sql and expected counts from updated objects.
+done	At the end of testing verify counts with both sql and expected counts from updated objects.
 		
 		
 		
