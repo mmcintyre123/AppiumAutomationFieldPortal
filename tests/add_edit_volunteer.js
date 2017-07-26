@@ -130,7 +130,7 @@ module.exports = function () {
 				.click()
 		});
 
-		it('Volunteer appears in list', function () {
+		it('Volunteer appears in "Active" list', function () {
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then(function (el) {
@@ -210,10 +210,11 @@ module.exports = function () {
 			config.lastCreatedVolunteer[0].lastupdatedby.should.match(config.userIdReg)
 		});
 
-		//todo build this from first and last name and org.
-		//it('LogID was as expected', function () {
-		//	config.lastCreatedVolunteer[0].logid.should.match(/^1594.FLast06_23T15_38$/)
-		//});
+		it('LogID was as expected', function () {
+			let logId = config.databaseNameAndServer[0].orgid + '.' + config.firstName.substring(0,1) + config.lastName;
+			let logIdReg = new RegExp(logId)
+			config.lastCreatedVolunteer[0].logid.should.match(logIdReg)
+		});
 
 	});
 };

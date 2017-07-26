@@ -115,6 +115,11 @@ module.exports = function () {
 				.click()
 				.waitForElementById(elements.actionBar.save, 10000)
 				.then(function () {
+					config.homeScreenStats[0].activecount +=1
+					config.homeScreenStats[0].volunteerbase += 1
+				})
+				
+				.then(function () {
 					if (email == '' || email == elements.prospectDetails.email) {
 						return driver
 							.elementById(elements.addVolunteer.email)

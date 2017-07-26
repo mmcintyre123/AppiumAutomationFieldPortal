@@ -127,6 +127,12 @@ module.exports = function () {
                     return driver.performTouchAction(action);
                 })
                 .waitForElementToDisappearByClassName(elements.general.spinner)
+                .then(function () {
+                    config.homeScreenStats[0].activecount +=1
+                    config.homeScreenStats[0].inactivecount -= 1
+                    config.homeScreenStats[0].reactivecount +=1
+                })
+                
 		});
 
         it('Still on the inactive tab', function () {

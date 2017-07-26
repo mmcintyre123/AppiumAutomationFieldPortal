@@ -32,6 +32,11 @@ module.exports = function () {
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
+		//set new percentages based on current expected counts
+		config.homeScreenStats[0].activepercent = (config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase)
+		config.homeScreenStats[0].inactivepercent = (config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase)
+		config.homeScreenStats[0].reactivatedpercent = (config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase)
+		
 		it('Full Login', function () {
 			return driver
 				.fullLogin()
