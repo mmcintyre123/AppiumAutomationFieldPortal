@@ -14,6 +14,7 @@
     "lodash.mapkeys": "^4.6.0",
     "lodash.merge": "^4.6.0",
     "mocha": "^3.4.2",
+    "mochawesome": "^2.3.0",
     "mssql": "^4.0.4",
     "node-cmd": "^3.0.0",
     "q": "^2.0.3",
