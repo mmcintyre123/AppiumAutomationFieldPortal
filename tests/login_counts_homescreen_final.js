@@ -33,11 +33,15 @@ module.exports = function () {
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
 		//set new percentages based on current expected counts
-		config.homeScreenStats[0].activepercent = (config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase)
-		config.homeScreenStats[0].inactivepercent = (config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase)
-		config.homeScreenStats[0].reactivatedpercent = (config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase)
+
+		it('Should set expected homeScreenStat percentages', function () {
+			config.homeScreenStats[0].activepercent = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+			config.homeScreenStats[0].inactivepercent = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+			config.homeScreenStats[0].reactivatedpercent = Math.round((config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+		});
 		
 		it('Full Login', function () {
+			this.retries = 1
 			return driver
 				.fullLogin()
 		});

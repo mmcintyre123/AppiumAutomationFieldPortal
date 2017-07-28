@@ -346,10 +346,10 @@ Commons.prototype.fullLogin = function(uname, pwd){
 				return driver
 			}
 		})
-		.waitForElementById(elements.loginLogout.userName)
+		.waitForElementById(elements.loginLogout.userName,10000)
 			.clear()
 			.sendKeys(uname)
-		.waitForElementById(elements.loginLogout.password)
+		.elementById(elements.loginLogout.password)
 			.click()
 			.clear()
 			.sendKeys(pwd)

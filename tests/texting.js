@@ -39,6 +39,7 @@ module.exports = function () {
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
 		it('Should determine if texting role is present', function () {
+			this.retries = 1
 			return driver
 				.sleep(1)
 				.then(function getUserId() {
@@ -59,6 +60,7 @@ module.exports = function () {
 		});
 		
     	it('Full Login', function () {
+			this.retries = 1
     		return driver
     			.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
     	});

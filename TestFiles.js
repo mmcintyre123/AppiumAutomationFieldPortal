@@ -17,6 +17,10 @@
 				return require( './tests/inactive_vols.js')();
 			case 'texting' :
 				return require( './tests/texting.js')();
+			case 'active_vols' :
+				return require( './tests/active_vols.js')();
+			case 'delete_volunteers' :
+				return require( './tests/delete_volunteers.js')();
 		}
 		console.log( 'No test case was selected!' );
 	};

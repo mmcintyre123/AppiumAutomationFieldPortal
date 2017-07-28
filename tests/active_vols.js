@@ -3,52 +3,57 @@
 module.exports = function () {
 
 	require('colors');
-	let wd            = require("wd");
-	let assert  	  = require('assert');
-	let asserters     = wd.asserters;
-	let	_             = require('underscore');
-	let	Q             = require('q');
-	let	fsExtra       = require('fs-extra');
-	let	fs            = require('fs');
-	let	pry  		  = require('pryjs');
-	const sql         = require('mssql');
-	let	_p            = require('../helpers/promise-utils');
-	let	elements      = require('../helpers/elements');
-	let	actions       = require('../helpers/actions');
-	let store    	  = require('../helpers/store');
-	let	config 		  = require('../helpers/config');
-	let	serverConfigs = require('../helpers/appium-servers');
-	let creds         = require('../credentials');
-	let sqlQuery      = require('../helpers/queries');
-	let	serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
-	let	args  		  = process.argv.slice( 2 );
-	let	simulator     = false;
+	let   wd            = require("wd");
+	let   assert        = require('assert');
+	let   asserters     = wd.asserters;
+	let   cities        = require('cities');
+	let   counties      = require('us-zcta-counties');
+	let   _             = require('underscore');
+	let   childProcess  = require('child_process');
+	let   clip          = require('clipboardy');
+	let   Q             = require('q');
+	let   fsExtra       = require('fs-extra');
+	let   fs            = require('fs');
+	let   pry           = require('pryjs');
+	const sql           = require('mssql');
+	let   _p            = require('../helpers/promise-utils');
+	let   elements      = require('../helpers/elements');
+	let   actions       = require('../helpers/actions');
+	let   store         = require('../helpers/store');
+	let   config        = require('../helpers/config');
+	let   serverConfigs = require('../helpers/appium-servers');
+	let   creds         = require('../credentials');
+	let   sqlQuery      = require('../helpers/queries');
+	let   serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
+	let   args          = process.argv.slice( 2 );
+	let   simulator     = false;
 	let	desired;
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("All inactive volunteer-related tests", function() {
+	describe("Describe the test category...defines the group of tests specified below", function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 		let firstName, lastName, fullName, email, state, phone, width, height;
-		config.searchResults = []
+        config.searchResults = []
+        
 
 		it('Full Login', function () {
-            this.retries = 1
+			this.retries = 1
 			return driver
-				.fullLogin()
+				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
 		});
 
-		it('Navigate to inactive volunteer list - tab is highlighted after selecting', function () {
+		it('Navigate to active volunteer list - tab is highlighted after selecting', function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
-				.waitForElementById(elements.volunteers.inActive,10000)
+				.waitForElementById(elements.volunteers.active,10000)
 				.click()
 				.sleep(2000) // plenty of time for tab to select
-				.elementById(elements.volunteers.inActive)
+				.elementById(elements.volunteers.active)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (value) {
 						assert.equal(value,1)
@@ -56,7 +61,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Open inactive volunteer details', function () {
+		it('Open active volunteer details', function () {
 			return driver
 				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
@@ -74,12 +79,12 @@ module.exports = function () {
 						lastName = attr.trim().split(/\s+/).pop()
 					})
 				})
-                .back()
 		});
 
-		it('Mark inactive volunteer active', function () {
+		it('Mark active volunteer inactive', function () {
 			return driver
-                .elementByIdOrNull(elements.volunteers.inActive)
+                .back()
+                .elementByIdOrNull(elements.volunteers.active)
                 .then(function (el) {
                     if (el == null) {
                         return driver
@@ -88,19 +93,19 @@ module.exports = function () {
                             .elementById(elements.homeScreen.volunteers)
                             .click()
                             .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.inActive, 10000)
+                            .waitForElementById(elements.volunteers.active, 10000)
                             .click()
                     } else {
                         return el.getAttribute('value').then(function (value) {
                             if (value != 1) {
                                 return driver
-                                    .waitForElementById(elements.volunteers.inActive, 10000)
+                                    .waitForElementById(elements.volunteers.active, 10000)
                                     .click()
                             }
                         })
                     }
                 })
-                // on inactive tab - swipe left on first person
+                // on active tab - swipe left on first person
                 .elementById(elements.volunteers.volunteer1.volunteer1)
                 .then(function (el) {
                     return el.getSize().then(function (size) {
@@ -118,7 +123,7 @@ module.exports = function () {
                     return driver
                         .swipe({startX: loc.x, startY: loc.y, offsetX: -(width/2), offsetY: 0,})
                 })
-                // tap Mark Active - todo - guessing the location of Mark Active - fix this once we have an id to click:
+                // tap Mark Inactive - todo - guessing the location of Mark Active - fix this once we have an id to click:
                 .elementById(elements.volunteers.volunteer1.volunteer1)
                 .then(function (el) {
                     var action = new wd.TouchAction(driver);
@@ -130,9 +135,9 @@ module.exports = function () {
                 .waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-        it('Still on the inactive tab', function () {
+        it('Still on the active tab', function () {
             return driver
-                .elementById(elements.volunteers.inActive)
+                .elementById(elements.volunteers.active)
                 .then(function (el) {
                     return el.getAttribute('value').then(function (value) {
                         assert.equal(value,1)
@@ -140,9 +145,9 @@ module.exports = function () {
                 })
         });
 
-        it('Volunteer no longer exists in the inactive tab', function () {
+        it('Volunteer no longer exists in the active tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.inActive)
+                .elementByIdOrNull(elements.volunteers.active)
                 .then(function (el) {
                     if (el == null) {
                         return driver
@@ -151,13 +156,13 @@ module.exports = function () {
                             .elementById(elements.homeScreen.volunteers)
                             .click()
                             .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.inActive, 10000)
+                            .waitForElementById(elements.volunteers.active, 10000)
                             .click()
                     } else {
                         return el.getAttribute('value').then(function (value) {
                             if (value != 1) {
                                 return driver
-                                    .elementById(elements.volunteers.inActive)
+                                    .elementById(elements.volunteers.active)
                                     .click()
                             }
                         })
@@ -175,26 +180,22 @@ module.exports = function () {
                     })
                 })
                 .then(function () {
-
-                    config.homeScreenStats[0].activecount        += 1
+                    config.homeScreenStats[0].activecount        -= 1
                     config.homeScreenStats[0].activepercent       = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
-                    config.homeScreenStats[0].inactivecount      -= 1
+                    config.homeScreenStats[0].inactivecount      += 1
                     config.homeScreenStats[0].inactivepercent     = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
-                    config.homeScreenStats[0].reactivatedcount   += 1
-                    config.homeScreenStats[0].reactivatedpercent  = Math.round((config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
-                    
                 })
         });
-        
+
         it('Cancel search', function () {
             return driver
                 .elementById(elements.actionBar.cancel)
                 .click()
         });
 
-        it('Switch to active tab', function () {
+        it('Switch to inactive tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.active)
+                .elementByIdOrNull(elements.volunteers.inActive)
                 .then(function (el) {
                     if (el == null) {
                         return driver
@@ -203,9 +204,9 @@ module.exports = function () {
                             .elementById(elements.homeScreen.volunteers)
                             .click()
                             .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.active, 10000)
+                            .waitForElementById(elements.volunteers.inActive, 10000)
                             .click()
-                            .elementById(elements.volunteers.active)
+                            .elementById(elements.volunteers.inActive)
                             .then(function (el) {
                                 return el.getAttribute('value').then(function (value) {
                                     assert.equal(value,1)
@@ -213,9 +214,9 @@ module.exports = function () {
                             })
                     } else {
                         return driver
-                            .elementById(elements.volunteers.active)
+                            .elementById(elements.volunteers.inActive)
                             .click()
-                            .elementById(elements.volunteers.active)
+                            .elementById(elements.volunteers.inActive)
                             .then(function (el) {
                                 return el.getAttribute('value').then(function (value) {
                                     assert.equal(value,1)
@@ -224,8 +225,8 @@ module.exports = function () {
                     }
                 })
         });
-                
-        it('Should be added to active tab', function () {
+
+        it('Should be added to inactive tab', function () {
             return driver
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
@@ -244,7 +245,7 @@ module.exports = function () {
                         assert.equal(name.trim(), fullName.trim())
                     })
                 })
-                
         });
+            
 	});
 };

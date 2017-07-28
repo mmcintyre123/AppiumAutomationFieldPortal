@@ -164,10 +164,12 @@ describe( 'Automation Test in Progress!'.green, function () {
 
 			let run = require( './TestFiles.js' );
 				run.sampleTests( 'login_counts_homescreen_initial' );
-				run.sampleTests( 'add_edit_volunteer');
-				run.sampleTests( 'texting' );
-				run.sampleTests( 'prospects' );
-				run.sampleTests( 'inactive_vols' );
+				// run.sampleTests( 'add_edit_volunteer');
+				// run.sampleTests( 'texting' );
+				// run.sampleTests( 'prospects' );
+				// run.sampleTests( 'inactive_vols' );
+				run.sampleTests('active_vols');
+				// run.sampleTests('delete_volunteers');
 				run.sampleTests( 'login_counts_homescreen_final' );
 		} );
 	} );

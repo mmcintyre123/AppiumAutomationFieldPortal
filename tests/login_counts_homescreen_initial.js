@@ -33,6 +33,7 @@ module.exports = function () {
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
 		it('Full Login', function () {
+			this.retries = 1
 			return driver
 				.fullLogin()
 		});

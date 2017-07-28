@@ -2,7 +2,12 @@ To do:
 
 	> move project to bitbucket so we can make it private so I can add queries.js to version control.
 	> Compare Android and iOS accessibility IDs and file issues in 33042.
-	> Put this.retries = 1 in every login step.
+	> create mark inactive tests - also use select button
+	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
+	> create delete volunteer test
+	> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js
+	> write sql to remove salutations from all volunteers and prospects for mobile automation before running
+	
 
 	> Create more tests cases:
 
