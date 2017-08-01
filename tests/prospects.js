@@ -35,6 +35,7 @@ module.exports = function () {
 		config.searchResults = []
 
 		it('Full Login', function () {
+			this.retries = 1
 			return driver
 				.fullLogin()
 		});
@@ -83,29 +84,34 @@ module.exports = function () {
 						}
 					})
 				})
-				.elementById(elements.prospectDetails.email)
-				.then(function (el) {
-					return el.getAttribute('name').then(function name(attr) {
-						if (attr != null) {
-							email = attr.trim();
-						}
-					})
-				})
-				.elementById(elements.prospectDetails.phone)
-				.then(function (el) {
-					return el.getAttribute('value').then(function (attr) {
-						if (attr != null) {
-							phone = attr.trim();
-						}
-					})
-				})
-				.elementByXPath(elements.prospectDetails.address)
-				.then(function (el) {
-					return el.getAttribute('name').then(function name(attr) {
-						if (attr != null) {
-							state = attr.trim().match(/\w+(?=[\s]{1})/g)[0];
-						}
-					})
+
+//				Can't test this yet - todo - need accessibility ID to not replace the actual element value / text you see.				
+//				.elementById(elements.prospectDetails.email)
+//				.then(function (el) {
+//					return el.getAttribute('name').then(function name(attr) {
+//						if (attr.length >= 6 && attr != 'tvEmail') { // we'll replace the email if it's less than 6 characters or not present (in which case equals the element id tvEmail). 6 chars should be the absolute minimum length of an email - e.g.: a@b.co
+//							email = attr.trim();
+//						}
+//					})
+//				})
+//				.elementById(elements.prospectDetails.phone)
+//				.then(function (el) {
+//					return el.getAttribute('value').then(function (attr) {
+//						if (attr != null) {
+//							phone = attr.trim();
+//						}
+//					})
+//				})
+
+				// find the state - todo simplify this when the IDs are fixed.
+				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView')
+				.source()
+				.then(function (source) { 
+					let filteredList = source;
+					let stateZip = filteredList.match(/[\w]{2}\s[\d]{5}/ig)
+					if (stateZip != null) {
+						state = stateZip[0].match(/^(\w+)/ig)[0];
+					}
 				})
 		});
 
@@ -115,22 +121,28 @@ module.exports = function () {
 				.click()
 				.waitForElementById(elements.actionBar.save, 10000)
 				.then(function () {
-					config.homeScreenStats[0].activecount +=1
-					config.homeScreenStats[0].volunteerbase += 1
-				})
-				
-				.then(function () {
-					if (email == '' || email == elements.prospectDetails.email) {
+					if (!email) { // if email blank or undefined
 						return driver
 							.elementById(elements.addVolunteer.email)
 							.click()
+							.clear()
 							.sendKeys(firstName + '.' + lastName + (Math.floor(Math.random() * 10000)) + '@callingfromhome.com')
+							.elementById(elements.addVolunteer.email)
+							.then(function (el) {
+								return el.getAttribute('name').then(function (attr) {
+									email = attr.trim()
+								})
+							})
 					}
 				})
 				.elementById(elements.actionBar.save)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.actionBar.edit, 20000)
+				.then(function () {
+					config.homeScreenStats[0].activecount +=1
+					config.homeScreenStats[0].volunteerbase += 1
+				})
 		});
 
 		it('On Volunteer Details after turning Prospect into Volunteer', function () {
@@ -141,31 +153,34 @@ module.exports = function () {
 		it('Compare Volunteer Info :: Former Prospect Info -- FIRST and LAST NAME match', function () {
 			return driver
 				// verify info based on prospect info above
-				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[1]') //first and last name
+				.elementByXPath(elements.vol_details.firstAndLastName) //first and last name
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
+						console.log('Actual name: ' + attr.trim() + ' Expected name: ' + firstName + ' ' + lastName)
 						assert.equal(attr.trim().split(/\s+/).shift(), firstName)
 						assert.equal(attr.trim().split(/\s+/).pop(), lastName)
 					})
 				})
 		});
 
-		it('Compare Volunteer Info :: Former Prospect Info -- EMAIL matches', function () {
+		it.skip('Compare Volunteer Info :: Former Prospect Info -- EMAIL matches', function () {
 			return driver
 				.elementById(elements.vol_details.email)
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
+						console.log('Actual email: ' + attr.trim() + ' Expected email: ' + email)
 						assert.equal(attr.trim(), email)
 					})
 				})
 		});
 
-		it('Compare Volunteer Info :: Former Prospect Info -- PHONE matches', function () {
+		it.skip('Compare Volunteer Info :: Former Prospect Info -- PHONE matches', function () {
 			return driver
 				.elementById(elements.vol_details.phone)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (attr) {
 						if (attr != null) {
+							console.log('Actual phone: ' + attr.trim() + ' Expected phone: ' + phone)
 							assert.equal(attr.trim(), phone)
 						}
 					})
@@ -174,28 +189,30 @@ module.exports = function () {
 
 		it('Compare Volunteer Info :: Former Prospect Info -- STATE matches', function () {
 			return driver
-				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView/XCUIElementTypeStaticText[3]') //state
+				.elementByXPath(elements.vol_details.address) // use this to get the state
 				.then(function (el) {
 					return el.getAttribute('name').then(function name(attr) {
-						assert.equal(attr.trim().match(/\w+(?=[\s]{1})/g)[0], state)
+						console.log('Actual state: ' + attr.trim() + ' Expected state: ' + state)
+						assert.equal(attr.trim().match(/[A-Z]{2}(?=\s[\d]{5})/g)[0], state)
 					})
 				})
-				.back()
 		});
 		
 		it('On Prospect list after returning from Vol Details, after prospect made a volunteer', function () {
 			return driver
+				.back()
 				.waitForElementById(elements.volunteers.prospects,10000)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (value) {
+						console.log('Actual value: ' + value + ' Expected value: ' + 1)
 						assert.equal(value,1)
 					})
 				})
-				.back()
 		});
 		
 		it('On Home Screen', function () {
 			return driver
+				.back()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.homeScreen.volunteers, 15000)
 		});
