@@ -21,6 +21,8 @@
 				return require( './tests/active_vols.js')();
 			case 'delete_volunteers' :
 				return require( './tests/delete_volunteers.js')();
+			case 'clean_data' :
+				return require( './tests/clean_data.js')();
 		}
 		console.log( 'No test case was selected!' );
 	};

@@ -1,62 +1,53 @@
 To do:
 
-	> move project to bitbucket so we can make it private so I can add queries.js to version control.
-	> Compare Android and iOS accessibility IDs and file issues in 33042.
-	> create mark inactive tests - also use select button
-	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
-	> create delete volunteer test
-	> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js
 	> write sql to remove salutations from all volunteers and prospects for mobile automation before running
-	
+	> create mark inactive tests - also use select button
+	> create delete volunteer test
+	> move project to bitbucket so we can make it private so I can add queries.js to version control.
+	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
+	> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js
+	> Compare Android and iOS accessibility IDs and file issues in 33042.
 
-	> Create more tests cases:
+Create more tests cases:
 
-		Login
-done	9) Select Prospects 
-done	10) Convert Prospect to volunteer (edited)
-done	7) Select Inactive volunteers
-done	8) Mark Inactive Volunteer Active [-- check counts update as well]
-done	2) Verify Text Icon based on user permissions
-		4) Email Active Volunteer, verify volunteer history
-		5) Text Active Volunteer, verify volunteer history
-done	1) Login - Login Verify home page Metrics
-done	3) Select Volunteers 
-done	6) Add new volunteer
+	Login
+	4) Email Active Volunteer, verify volunteer history
+	5) Text Active Volunteer, verify volunteer history
 
-
-
-done  > change counts verification at end of testing so that we keep track of test actions and check it updated accordingly (rather than using sql again - risk of false positive)
-done	In login counts test create objects for each count - should persist across all test sessions.
-done	update the objects during testing:
-done		- anytime we add a volunteer => active += 1, volBase += 1
-done		- activate someone from inactive => re-activated += 1, active volunteers += 1, inactive -= 1
-			- mark a volunteer inactive => active -= 1, inactive += 1
-done	At the end of testing verify counts with both sql and expected counts from updated objects.
-		
-		
+	done	In login counts test create objects for each count - should persist across all test sessions.
+	done	update the objects during testing:
+	done		- anytime we add a volunteer => active += 1, volBase += 1
+	done		- activate someone from inactive => re-activated += 1, active volunteers += 1, inactive -= 1
+				- mark a volunteer inactive => active -= 1, inactive += 1
+	done	At the end of testing verify counts with both sql and expected counts from updated objects.
 		
 	> everywhere we check for elements to be present/absent in a list, must assert the element is visible/invisible -- element may not appear, but it is still there, only hidden.  So we can't verify an element is present based on it's id - must make sure the "visible" attribute is true.
-		> State selection - figure out how to scroll
+	> State selection - figure out how to scroll
 	> Anytime we have a long wait statement, be sure to time the action.
-	> Make each test case as independent as possible - at the beginning expect to be on the required starting
-		point using elementByIdOrNull, and if not, reset app and go there.
+
+Add to walk project:
 	> modify wait_for_sql in walk project to match this.
 	> update sql queries in walk project to set connection conditionally for test vs. prod
 
-	
-Keep tests short (less than 6 minutes) and log out and back in
-
 Notes:
+	// Keep tests short (less than 6 minutes) and log out and back in
 	// in future research if possible to pass in database to query for sql queries, like using :setvar
-
 	// can use clip package to access clipboard: 			
 		let clip = require('clipboardy');
 		clip.writeSync('VA') // put state on clipboard
-
-	// to clean out Web Driver folder that accumulates screenshots and logs:
-	rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*
-
 	// Had to set user id, name and database name in the login step, and make all queries dynamically set the current database before they run
 
-	// to clean out videos, screenshots, loadTimeLogs, and test results
-	rm -rfv $HOME/AppiumAutomationFieldPortal/test_results/* $HOME/AppiumAutomationFieldPortal/loadTimeLogs/* $HOME/AppiumAutomationFieldPortal/video/* $HOME/AppiumAutomationFieldPortal/screenShots/*
+
+	// SPACE SAVING COMMANDS - STUFF TO DELETE ON MAC:
+
+		// run CCleaner
+		// clean out videos, screenshots, loadTimeLogs, and test results in automation projects 
+			rm -rfv $HOME/AppiumAutomationFieldPortal/test_results/* ; rm -rfv $HOME/AppiumAutomationFieldPortal/loadTimeLogs/* ; rm -rfv $HOME/AppiumAutomationFieldPortal/video/* ; rm -rfv $HOME/AppiumAutomationFieldPortal/screenShots/* ; rm -rfv $HOME/AppiumAutomation/test_results/*; rm -rfv $HOME/AppiumAutomation/loadTimeLogs/*; rm -rfv $HOME/AppiumAutomation/video/*; rm -rfv $HOME/AppiumAutomation/screenShots/*
+
+		// to clean out Web Driver folder that accumulates screenshots and logs:
+			rm -fR /Users/mliedtka/Library/Developer/Xcode/DerivedData/WebDriverAgent-brdadhpuduowllgivnnvuygpwhzy/Logs/Test*
+
+		// save space in XCode:
+			sudo rm -rfv /Library/Developer/CoreSimulator/Profiles/Runtimes/iOS\ 9.2.simruntime #or whatever runtime you don't need
+			cd /Applications/Xcode.app/Contents/Developer/Platforms/ ; sudo rm -rf AppleTV* Watch* #or whatever platforms you don't need
+			rm -rf ~/Library/Caches/com.apple.dt.Xcode #clean out XCode cache - can get very large.

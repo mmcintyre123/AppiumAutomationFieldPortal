@@ -28,12 +28,6 @@ for (var i in args ) {
 	switch ( arg ) {
 		case '--sim' : {
 			appium = childProcess.spawn( 'appium', [
-				//'-p','4725', //non-default args
-				//'-cp','4725', //non-default args
-				//'-bp','4726', //non-default args
-				//'--selendroid-port', '8081', //non-default args
-				//'--chromedriver-port', '9516', //non-default args
-				//'--webkit-debug-proxy-port', '27754', //non-default args
 				'--strict-caps',
 				'--session-override',
 				'--log-level', 'debug',
@@ -41,18 +35,15 @@ for (var i in args ) {
 				'--log', '/Users/mliedtka/appium_logs1/appium.log',
 				'--address', "localhost",
 				'--default-capabilities', '{ \
-						"app":"/Users/mliedtka/Library/Developer/Xcode/DerivedData/i360FieldPortal-ajjqwixsfucdmdchgcuxgwodjufu/Build/Products/Debug-iphonesimulator/i360FieldPortal.app/", \
+						"bundleId": "com.i360.i360FieldPortal",\
 						"showIOSLog":"false", \
 						"autoAcceptAlerts":"true", \
 						"nativeInstrumentsLib":"true", \
-						"platformName":"iOS", \
-						"platformVersion":"10.2", \
 						"automationName":"XCUITest", \
-						"deviceName":"iPad Air 2", \
-						"bundleId":"com.i360.i360FieldPortal", \
-						"fullReset":"false", \
 						"clearSystemFiles":"true", \
 						"preventWDAAttachments":"true",\
+						"newCommandTimeout": false, \
+						"fullReset":"false", \
 						"noReset":"true"\
 				}'
 			]);
