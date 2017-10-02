@@ -12,14 +12,14 @@ module.exports = function () {
 	let stackTrace    = require('stack-trace');
 	let	pry  		  = require('pryjs');
 	const sql         = require('mssql');
-	let	_p            = require('../helpers/promise-utils');
-	let	elements      = require('../helpers/elements');
-	let	actions       = require('../helpers/actions');
-	let	config 		  = require('../helpers/config');
-	let	serverConfigs = require('../helpers/appium-servers');
-	let	commons       = require('../helpers/commons');
-	let sqlQuery      = require('../helpers/queries');
-	let creds         = require('../credentials');
+	let	_p            = require('../../helpers/promise-utils');
+	let	elements      = require('../../helpers/elements');
+	let	actions       = require('../../helpers/actions');
+	let	config 		  = require('../../helpers/config');
+	let	serverConfigs = require('../../helpers/appium-servers');
+	let	commons       = require('../../helpers/commons');
+	let sqlQuery      = require('../../helpers/queries');
+	let creds         = require('../../credentials');
 	let	serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
 	let	args  		  = process.argv.slice( 2 );
 	let	simulator     = false;
@@ -66,9 +66,44 @@ module.exports = function () {
 				})
 		});
 
-		it('Quick Login', function () {
+		it.only('Quick Login', function () {
 			return driver
 				.loginQuick()
+		});
+		
+        it.only('demonstrate methods: is_selected, is_not_selected, is_visible, is_not_visible', function () {
+            return driver
+                .loginQuick()
+                .elementById(elements.homeScreen.volunteers)
+                .click()
+                .waitForElementToDisappearByClassName(elements.general.spinner)
+                .elementByIdOrNull(elements.volunteers.active)
+                .then((el) => { 
+                    return driver
+                        .is_visible(el)
+                        .is_selected(el)
+                })
+                .elementById(elements.actionBar.search)
+                .click()
+                .elementByIdOrNull(elements.volunteers.inActive)
+                .then((el) => {
+                    // el is hidden under search bar - not null, but also not visible and not selected
+                    assert.notEqual(el,null) 
+                    return driver
+                        .is_not_visible(el)
+                        .is_not_selected(el)
+                })
+        });
+		
+		it.only('should get attribute without .then', function () {
+			return driver
+				.elementById(elements.homeScreen.volunteers)
+				.click()
+				.elementById(elements.volunteers.active)
+				.getAttribute('value')
+				.then(function (value) {
+					console.log(value);
+				})
 		});
 
 		//working 4-28-17 5:59pm --- for connecting to a single server in a test case (it statement)
@@ -97,7 +132,6 @@ module.exports = function () {
 				//	console.log('Something went wrong'.red.bold)
 				//})
 		});
-
 
 		//passing - for if we need to check data on different servers in the same test case (it statement)
 		it('Should create a sql connection pool to query two different servers in the same test case', function () {

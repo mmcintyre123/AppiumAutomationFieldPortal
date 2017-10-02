@@ -1,10 +1,10 @@
 To do:
 
-	> write sql to remove salutations from all volunteers and prospects for mobile automation before running
 	> create mark inactive tests - also use select button
 	> create delete volunteer test
-	> move project to bitbucket so we can make it private so I can add queries.js to version control.
 	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
+
+	> move project to bitbucket so we can make it private so I can add queries.js to version control.
 	> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js
 	> Compare Android and iOS accessibility IDs and file issues in 33042.
 
@@ -20,7 +20,7 @@ Create more tests cases:
 	done		- activate someone from inactive => re-activated += 1, active volunteers += 1, inactive -= 1
 				- mark a volunteer inactive => active -= 1, inactive += 1
 	done	At the end of testing verify counts with both sql and expected counts from updated objects.
-		
+
 	> everywhere we check for elements to be present/absent in a list, must assert the element is visible/invisible -- element may not appear, but it is still there, only hidden.  So we can't verify an element is present based on it's id - must make sure the "visible" attribute is true.
 	> State selection - figure out how to scroll
 	> Anytime we have a long wait statement, be sure to time the action.

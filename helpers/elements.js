@@ -54,69 +54,82 @@ let config = require('./config');
     }
 
 	exports.volunteers = {
-        'active'        : 'Active',
-        'activeTable'   : 'IvActive',
-        'inActive'      : 'Inactive',
-        'inActiveTable' : 'IvInactive',
-        'prospects'     : 'My Prospects',
-        'prospectTable' : 'IvProspects',
-        'volunteer1'    : { 'volunteer1'   : 'cellVolunteer_0',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[3]'
+        'active'       : 'Active',
+        'activeTable'  : 'IvActive',
+        'inActive'     : 'Inactive',
+        'inActiveTable': 'IvInactive',
+        'prospects'    : 'My Prospects',
+        'prospectTable': 'IvProspects',
+        'searchResults': 'Search results', //elbug
+        'bottomBar'    : {  'flag'   : 'ic flag', //elbug
+                            'share'  : 'Compose', //elbug
+                            'assign' : 'ic assignment', //elbug
+                            'delete' : 'Delete'         //elbug
+                         },
+        'flag'         : { 'markActive'     : 'Mark as Active', // elbug
+                           'markInactive'   : 'Mark as Inactive',//elbug
+                           'addAsVolunteer' : 'Add as Volunteer'//elbug
+                         },
+        'share'        : { 'email'  : 'Send Email', // elbug
+                           'text'   : 'Send Text', // elbug
+                           'notify' : 'Send Volunteer Notification', // elbug
+                         },
+        'volunteer1'    : { 'volunteer1' : 'cellVolunteer_0',
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_0"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer2'      : { 'volunteer2' : 'cellVolunteer_1',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[3]'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_1"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer3'      : { 'volunteer3' : 'cellVolunteer_2',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[3]'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_2"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer4'      : { 'volunteer4' : 'cellVolunteer_3',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[3]'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_3"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer5'      : { 'volunteer5' : 'cellVolunteer_4',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[3]'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_4"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer6'      : { 'volunteer6' : 'cellVolunteer_5',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[3]'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_5"][1]/XCUIElementTypeButton[3]'
                             },
         'volunteer7'      : { 'volunteer7' : 'cellVolunteer_6',
-                              'fullName'   : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[1]',
-                              'cityState'  : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[2]',
-                              'email'      : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[3]',
-                              'phone1'     : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[1]',
-                              'phone2'     : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[2]',
-                              'phone3'     : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[3]'
-                            },
-        'searchResults'   : 'Search results'
+                              'fullName' : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[1]',
+                              'cityState': '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[2]',
+                              'email'    : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeStaticText[3]',
+                              'phone1'   : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[1]',
+                              'phone2'   : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[2]',
+                              'phone3'   : '//XCUIElementTypeCell[@name="cellVolunteer_6"][1]/XCUIElementTypeButton[3]'
+                            }
     }
 
 	exports.prospects = {

@@ -19,45 +19,51 @@ exports.swipe = function (opts) {
 };
 
 exports.pinch = function (el) {
-  return Q.all([
-    el.getSize(),
-    el.getLocation(),
-  ]).then(function (res) {
-    let size = res[0];
-    let loc = res[1];
-    let center = {
-      x: loc.x + size.width / 2,
-      y: loc.y + size.height / 2
-    };
-    let a1 = new wd.TouchAction(this);
-    a1.press({el: el, x: center.x, y: center.y - 100}).moveTo({el: el}).release();
-    let a2 = new wd.TouchAction(this);
-    a2.press({el: el, x: center.x, y: center.y + 100}).moveTo({el: el}).release();
-    let m = new wd.MultiAction(this);
-    m.add(a1, a2);
-    return m.perform();
-  }.bind(this));
+  return Q
+    .all([
+      el.getSize(),
+      el.getLocation(),
+    ])
+    .then(function (res) {
+      let size = res[0];
+      let loc = res[1];
+      let center = {
+        x: loc.x + size.width / 2,
+        y: loc.y + size.height / 2
+      };
+      let a1 = new wd.TouchAction(this);
+      a1.press({el: el, x: center.x, y: center.y - 100}).moveTo({el: el}).release();
+      let a2 = new wd.TouchAction(this);
+      a2.press({el: el, x: center.x, y: center.y + 100}).moveTo({el: el}).release();
+      let m = new wd.MultiAction(this);
+      m.add(a1, a2);
+      return m.perform();
+    }
+    .bind(this));
 };
 
 exports.zoom = function (el) {
-  return Q.all([
-    this.getWindowSize(),
-    this.getLocation(el),
-  ]).then(function (res) {
-    let size = res[0];
-    let loc = res[1];
-    let center = {
-      x: loc.x + size.width / 2,
-      y: loc.y + size.height / 2
-    };
-    let a1 = new wd.TouchAction(this);
-    a1.press({el: el}).moveTo({el: el, x: center.x, y: center.y - 100}).release();
-    let a2 = new wd.TouchAction(this);
-    a2.press({el: el}).moveTo({el: el, x: center.x, y: center.y + 100}).release();
-    let m = new wd.MultiAction(this);
-    m.add(a1, a2);
-    return m.perform();
-  }.bind(this));
+  return Q
+    .all([
+      this.getWindowSize(),
+      this.getLocation(el),
+    ])
+    .then(function (res) {
+      let size = res[0];
+      let loc = res[1];
+      let center = {
+        x: loc.x + size.width / 2,
+        y: loc.y + size.height / 2
+      };
+      let a1 = new wd.TouchAction(this);
+      a1.press({el: el}).moveTo({el: el, x: center.x, y: center.y - 100}).release();
+      let a2 = new wd.TouchAction(this);
+      a2.press({el: el}).moveTo({el: el, x: center.x, y: center.y + 100}).release();
+      let m = new wd.MultiAction(this);
+      m.add(a1, a2);
+      return m.perform();
+    }
+    .bind(this));
 };
 
 exports.takeScreenshotMethod = function(name) {

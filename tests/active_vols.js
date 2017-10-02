@@ -5,7 +5,6 @@ module.exports = function () {
 	require('colors');
 	let   wd            = require("wd");
 	let   assert        = require('assert');
-	let   asserters     = wd.asserters;
 	let   cities        = require('cities');
 	let   counties      = require('us-zcta-counties');
 	let   _             = require('underscore');
@@ -27,38 +26,63 @@ module.exports = function () {
 	let   serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
 	let   args          = process.argv.slice( 2 );
 	let   simulator     = false;
-	let	desired;
-	let driver = config.driver;
-	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
+	let   asserters     = wd.asserters;
+	let   driver        = config.driver;
+	let	  desired;
+	let   commons       = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("Describe the test category...defines the group of tests specified below", function() {
+    // TODO clean up all the visible and selected statements.  See new promise chain methods and/or sample.js.
+    
+	describe("Tests in the Active tab", function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
-		let firstName, lastName, fullName, email, state, phone, width, height;
+        let vol1FullName, vol2FullName, firstName, lastName, fullName, email, state, phone, width, height;
         config.searchResults = []
-        
 
-		it('Full Login', function () {
+        it.skip('testing stuff', function () {
+            return driver
+                .loginQuick()
+                .elementById(elements.homeScreen.volunteers)
+                .click()
+                .waitForElementToDisappearByClassName(elements.general.spinner)
+                .elementByIdOrNull(elements.volunteers.active)
+                .then((el) => { 
+                    return driver
+                        .is_visible(el)
+                        .is_selected(el)
+                })
+                .elementById(elements.actionBar.search)
+                .click()
+                .elementByIdOrNull(elements.volunteers.inActive)
+                .then((el) => {
+                    // el is hidden under search bar - not null, but also not visible and not selected
+                    assert.notEqual(el,null) 
+                    return driver
+                        .is_not_visible(el)
+                        .is_not_selected(el)
+                })
+        });
+        
+		it.skip('Full Login', function () {
 			this.retries = 1
 			return driver
 				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
-		});
+        });
+        
+        it('Quick Login', function () {
+            this.retries = 1 
+            return driver
+                .loginQuick()
+        });
 
-		it('Navigate to active volunteer list - tab is highlighted after selecting', function () {
+		it('Navigate to active volunteer list - tab is selected by default', function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
-				.click()
-				.waitForElementToDisappearByClassName(elements.general.spinner)
+                .click()
 				.waitForElementById(elements.volunteers.active,10000)
-				.click()
-				.sleep(2000) // plenty of time for tab to select
-				.elementById(elements.volunteers.active)
-				.then(function (el) {
-					return el.getAttribute('value').then(function (value) {
-						assert.equal(value,1)
-					})
-				})
+                .getAttribute('value')
+                .then( (value) => {assert.equal(value,1)})
 		});
 
 		it('Open active volunteer details', function () {
@@ -81,41 +105,29 @@ module.exports = function () {
 				})
 		});
 
-		it('Mark active volunteer inactive', function () {
-			return driver
+        it('On Active tab after going back', function () {
+            return driver
                 .back()
                 .elementByIdOrNull(elements.volunteers.active)
-                .then(function (el) {
-                    if (el == null) {
-                        return driver
-                            .resetApp()
-                            .loginQuick()
-                            .elementById(elements.homeScreen.volunteers)
-                            .click()
-                            .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.active, 10000)
-                            .click()
-                    } else {
-                        return el.getAttribute('value').then(function (value) {
-                            if (value != 1) {
-                                return driver
-                                    .waitForElementById(elements.volunteers.active, 10000)
-                                    .click()
-                            }
-                        })
-                    }
-                })
+                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .elementById(elements.volunteers.active)
+                .getAttribute('value')
+                .then((value) => {assert.equal(value,1)})
+        });
+
+		it('Mark active volunteer inactive', function () {
+            return driver
                 // on active tab - swipe left on first person
                 .elementById(elements.volunteers.volunteer1.volunteer1)
                 .then(function (el) {
-                    return el.getSize().then(function (size) {
+                    return el.getSize().then((size) => {
                         height = size.height;
                         width = size.width;
                     })
                 })
                 .elementById(elements.volunteers.volunteer1.volunteer1)
                 .getLocation()
-                .then(function (loc) {
+                .then( (loc) => {
                     //swipe left
                     console.log(('Element location: ' + loc.x + ', ' + loc.y + ' height: ' + height + ' width: ' + width).white.bold)
                     loc.x = loc.x + width - 75 // just to the left of the right edge of element
@@ -137,53 +149,27 @@ module.exports = function () {
 
         it('Still on the active tab', function () {
             return driver
+                .elementByIdOrNull(elements.volunteers.active)
+                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
                 .elementById(elements.volunteers.active)
-                .then(function (el) {
-                    return el.getAttribute('value').then(function (value) {
-                        assert.equal(value,1)
-                    })
-                })
+                .getAttribute('value')
+                .then((value) => {assert.equal(value,1)})
         });
 
         it('Volunteer no longer exists in the active tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.active)
-                .then(function (el) {
-                    if (el == null) {
-                        return driver
-                            .resetApp()
-                            .loginQuick()
-                            .elementById(elements.homeScreen.volunteers)
-                            .click()
-                            .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.active, 10000)
-                            .click()
-                    } else {
-                        return el.getAttribute('value').then(function (value) {
-                            if (value != 1) {
-                                return driver
-                                    .elementById(elements.volunteers.active)
-                                    .click()
-                            }
-                        })
-                    }
-                })
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(fullName)
-                .sleep(1000) // make sure automation not too fast - wait for results (should be instant)
-                //get first result element:
+                .sleep(500) // wait for results (should be instant)
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .then(function (el) {
-                    return el.getAttribute('visible').then(function (visible) {
-                        assert.equal(visible, false)
-                    })
-                })
+                .getAttribute('visible')
+                .then((visible) => {assert.equal(visible,false)})
                 .then(function () {
-                    config.homeScreenStats[0].activecount        -= 1
-                    config.homeScreenStats[0].activepercent       = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
-                    config.homeScreenStats[0].inactivecount      += 1
-                    config.homeScreenStats[0].inactivepercent     = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+                    config.homeScreenStats[0].activecount     -= 1
+                    config.homeScreenStats[0].activepercent    = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
+                    config.homeScreenStats[0].inactivecount   += 1
+                    config.homeScreenStats[0].inactivepercent  = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
                 })
         });
 
@@ -191,39 +177,23 @@ module.exports = function () {
             return driver
                 .elementById(elements.actionBar.cancel)
                 .click()
+                .elementById(elements.volunteers.active)
+                .then((el) => {
+                    return el
+                        .getAttribute('visible')
+                        .then((visible) => {assert.equal(visible, true)}) // Active is visible - search bar successfully cancelled
+                        .getAttribute('value')
+                        .then((value) => {assert.equal(value,1)}) // Active is selected
+                })
         });
 
         it('Switch to inactive tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.inActive)
-                .then(function (el) {
-                    if (el == null) {
-                        return driver
-                            .resetApp()
-                            .loginQuick()
-                            .elementById(elements.homeScreen.volunteers)
-                            .click()
-                            .waitForElementToDisappearByClassName(elements.general.spinner)
-                            .waitForElementById(elements.volunteers.inActive, 10000)
-                            .click()
-                            .elementById(elements.volunteers.inActive)
-                            .then(function (el) {
-                                return el.getAttribute('value').then(function (value) {
-                                    assert.equal(value,1)
-                                })
-                            })
-                    } else {
-                        return driver
-                            .elementById(elements.volunteers.inActive)
-                            .click()
-                            .elementById(elements.volunteers.inActive)
-                            .then(function (el) {
-                                return el.getAttribute('value').then(function (value) {
-                                    assert.equal(value,1)
-                                })
-                            })
-                    }
-                })
+                .elementById(elements.volunteers.inActive)
+                .click()
+                .elementById(elements.volunteers.inActive)
+                .getAttribute('value')
+                .then((value) => {assert.equal(value,1)})
         });
 
         it('Should be added to inactive tab', function () {
@@ -231,21 +201,137 @@ module.exports = function () {
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
                 .sendKeys(fullName)
-                .sleep(1000) // make sure automation not too fast - wait for results (should be instant)
-                //get first result element:
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .then(function (el) {
-                    return el.getAttribute('visible').then(function (visible) {
-                        assert.equal(visible, true)
-                    })
+                .then((el) => {
+                    return el
+                        .getAttribute('visible')
+                        .then((visible) => {assert.equal(visible,1)}) // name is visible
+                        .getAttribute('name')
+                        .then((name) => {assert.equal(name.trim(), fullName.trim())}) //full name is as expected
                 })
+                .elementById(elements.actionBar.cancel)
+                .click()
+        });
+
+        it('Should mark multiple Volunteers Inactive via selecting', function () {
+            return driver
+                .elementByIdOrNull(elements.volunteers.active)
+                .recoverFromFailuresVolunteers()
+                //save names of first and second volunteers
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .then(function (el) {
-                    return el.getAttribute('name').then(function (name) {
-                        assert.equal(name.trim(), fullName.trim())
-                    })
+                .getAttribute('name')
+                .then((name) => {vol1FullName = name.trim()})
+                .elementByXPathOrNull(elements.volunteers.volunteer2.fullName)
+                .getAttribute('name')
+                .then((name) => {vol2FullName = name.trim()})
+                //select vol 1 and 2 and mark inactive
+                .elementById(elements.actionBar.select)
+                .click()
+                .elementById(elements.volunteers.volunteer1.volunteer1)
+                .click()
+                .elementById(elements.volunteers.volunteer2.volunteer2)
+                .click()
+                .elementById(elements.volunteers.bottomBar.flag)
+                .click()
+                .elementById(elements.volunteers.flag.markInactive)
+                .click()
+                .waitForElementToDisappearByClassName(elements.general.spinner)
+        });
+
+        it('Still on the active tab', function () {
+            return driver
+                .elementByIdOrNull(elements.volunteers.active)
+                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .elementById(elements.volunteers.active)
+                .getAttribute('value')
+                .then((value) => {assert.equal(value,1)})
+        });
+
+        it('Vol1 does not exist in the active tab', function () {
+            return driver
+                .elementById(elements.actionBar.search)
+                .click()
+                .sendKeys(vol1FullName)
+                .sleep(500) // wait for results (should be instant)
+                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+                .getAttribute('visible')
+                .then((visible) => {assert.equal(visible,false)})
+                .then(function () {
+                    config.homeScreenStats[0].activecount        -= 1
+                    config.homeScreenStats[0].inactivecount      += 1
+                    
+                    let activepercentRaw = (config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100;
+                    let inActivePercentRaw = (config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100;
+                    console.log('active percent: ' + activepercentRaw);
+                    console.log('inactive percent: ' + inActivePercentRaw);
+
+                    config.homeScreenStats[0].activepercent   = Math.round(activepercentRaw) + '%'
+                    config.homeScreenStats[0].inactivepercent = Math.round(inActivePercentRaw) + '%'
                 })
         });
-            
+
+        it('Cancel search', function () {
+            return driver
+                .elementById(elements.actionBar.cancel)
+                .click()
+                .elementByIdOrNull(elements.volunteers.active)
+                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .elementById(elements.volunteers.active)
+                .then((el) => {return driver.visibleAndSelected(el)})
+        });
+
+        it('Switch to inactive tab', function () {
+            return driver
+                .elementById(elements.volunteers.inActive)
+                .click()
+                .elementById(elements.volunteers.inActive)
+                .getAttribute('value')
+                .then((value) => {assert.equal(value,1)})
+        });
+
+        it('Vol1 should be added to inactive tab', function () {
+            return driver
+                .waitForElementById(elements.actionBar.search,10000)
+                .click()
+                .sendKeys(vol1FullName)
+                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+                .then((el) => {return el.isVisible()})//todo test this
+                .then(function (el) {
+                    return el
+                        .getAttribute('visible')
+                        .then(function (visible) {
+                            assert.equal(visible, true) // full name field is present
+                        })
+                        .getAttribute('name')
+                        .then(function (name) {
+                            assert.equal(name.trim(), vol1FullName.trim()) // full name is as expected
+                        })
+                })
+                .elementById(elements.actionBar.cancel)
+                .click()
+        });
+        
+        it('Vol2 should be added to inactive tab', function () {
+            return driver
+                .waitForElementById(elements.actionBar.search,10000)
+                .click()
+                .sendKeys(vol2FullName)
+                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+                .then(function (el) {
+                    return el
+                        .getAttribute('visible')
+                        .then(function (visible) {
+                            assert.equal(visible, true) // full name field is present
+                        })
+                        .getAttribute('name')
+                        .then(function (name) {
+                            assert.equal(name.trim(), vol2FullName.trim()) // full name is as expected
+                        })
+                })
+                .elementById(elements.actionBar.cancel)
+                .click()
+        });
+        
+
 	});
 };

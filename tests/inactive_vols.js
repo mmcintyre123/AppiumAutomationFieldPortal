@@ -47,7 +47,7 @@ module.exports = function () {
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.volunteers.inActive,10000)
 				.click()
-				.sleep(2000) // plenty of time for tab to select
+				.sleep(500) // time for tab to select
 				.elementById(elements.volunteers.inActive)
 				.then(function (el) {
 					return el.getAttribute('value').then(function (value) {
@@ -244,7 +244,7 @@ module.exports = function () {
                         assert.equal(name.trim(), fullName.trim())
                     })
                 })
-                
         });
+        
 	});
 };

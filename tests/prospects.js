@@ -27,6 +27,8 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
+	//todo add a tag and note to volunteer created from prospect directly after creation.\
+
 	describe("All Prospect-related tests", function() {
 
 		let allPassed = true;
@@ -34,15 +36,16 @@ module.exports = function () {
 		let firstName, lastName, fullName, email, state, phone;
 		config.searchResults = []
 
-		it('Full Login', function () {
+		it.skip('Full Login', function () {
 			this.retries = 1
 			return driver
 				.fullLogin()
 		});
-		//it('Quick Login', function () {
-		//	return driver
-		//		.loginQuick()
-		//});
+		
+		it('Quick Login', function () {
+			return driver
+				.loginQuick()
+		});
 
 		it('Navigate to prospects list (prospects tab highlighted after selecting)', function () {
 			return driver
@@ -85,28 +88,28 @@ module.exports = function () {
 					})
 				})
 
-//				Can't test this yet - todo - need accessibility ID to not replace the actual element value / text you see.				
-//				.elementById(elements.prospectDetails.email)
-//				.then(function (el) {
-//					return el.getAttribute('name').then(function name(attr) {
-//						if (attr.length >= 6 && attr != 'tvEmail') { // we'll replace the email if it's less than 6 characters or not present (in which case equals the element id tvEmail). 6 chars should be the absolute minimum length of an email - e.g.: a@b.co
-//							email = attr.trim();
-//						}
-//					})
-//				})
-//				.elementById(elements.prospectDetails.phone)
-//				.then(function (el) {
-//					return el.getAttribute('value').then(function (attr) {
-//						if (attr != null) {
-//							phone = attr.trim();
-//						}
-//					})
-//				})
+			//	Can't test this yet - todo - need accessibility ID to not replace the actual element value / text you see.
+			//	.elementById(elements.prospectDetails.email)
+			//	.then(function (el) {
+			//		return el.getAttribute('name').then(function name(attr) {
+			//			if (attr.length >= 6 && attr != 'tvEmail') { // we'll replace the email if it's less than 6 characters or not present (in which case equals the element id tvEmail). 6 chars should be the absolute minimum length of an email - e.g.: a@b.co
+			//				email = attr.trim();
+			//			}
+			//		})
+			//	})
+			//	.elementById(elements.prospectDetails.phone)
+			//	.then(function (el) {
+			//		return el.getAttribute('value').then(function (attr) {
+			//			if (attr != null) {
+			//				phone = attr.trim();
+			//			}
+			//		})
+			//	})
 
 				// find the state - todo simplify this when the IDs are fixed.
 				.elementByXPath('//*/XCUIElementTypeOther/XCUIElementTypeScrollView')
 				.source()
-				.then(function (source) { 
+				.then(function (source) {
 					let filteredList = source;
 					let stateZip = filteredList.match(/[\w]{2}\s[\d]{5}/ig)
 					if (stateZip != null) {
@@ -197,7 +200,7 @@ module.exports = function () {
 					})
 				})
 		});
-		
+
 		it('On Prospect list after returning from Vol Details, after prospect made a volunteer', function () {
 			return driver
 				.back()
@@ -209,14 +212,14 @@ module.exports = function () {
 					})
 				})
 		});
-		
+
 		it('On Home Screen', function () {
 			return driver
 				.back()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.homeScreen.volunteers, 15000)
 		});
-		
+
 		it('Prospect made into Volunteer appears in active volunteer list', function () {
 			return driver
 				.elementByIdOrNull(elements.homeScreen.volunteers) // ensure we're on the login screen, if not, reset app

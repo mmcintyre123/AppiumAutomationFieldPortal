@@ -39,6 +39,11 @@ wd.addPromiseChainMethod('getHousesWithMoreThan1Primary',sqlQuery.getHousesWithM
 wd.addPromiseChainMethod('touchedHouses',sqlQuery.touchedHouses);
 wd.addPromiseChainMethod('wait_for_sql',commons.wait_for_sql);
 wd.addPromiseChainMethod('getUserRoles',sqlQuery.getUserRoles);
+wd.addPromiseChainMethod('recoverFromFailuresVolunteers',commons.recoverFromFailuresVolunteers);
+wd.addPromiseChainMethod('is_selected',commons.is_selected)
+wd.addPromiseChainMethod('is_not_selected',commons.is_not_selected)
+wd.addPromiseChainMethod('is_visible',commons.is_visible)
+wd.addPromiseChainMethod('is_not_visible',commons.is_not_visible)
 
 
 exports.should = should;
