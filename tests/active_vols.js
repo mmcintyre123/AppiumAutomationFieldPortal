@@ -31,8 +31,6 @@ module.exports = function () {
 	let	  desired;
 	let   commons       = require('../helpers/commons'); // this must be after the desired and driver are set
 
-    // TODO clean up all the visible and selected statements.  See new promise chain methods and/or sample.js.
-    
 	describe("Tests in the Active tab", function() {
 
 		let allPassed = true;
@@ -46,32 +44,20 @@ module.exports = function () {
                 .elementById(elements.homeScreen.volunteers)
                 .click()
                 .waitForElementToDisappearByClassName(elements.general.spinner)
-                .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => { 
-                    return driver
-                        .is_visible(el)
-                        .is_selected(el)
-                })
+                .elementByIdOrNull(elements.volunteers.inActive)
+                .then(el => driver.is_visible(el))
                 .elementById(elements.actionBar.search)
                 .click()
-                .elementByIdOrNull(elements.volunteers.inActive)
-                .then((el) => {
-                    // el is hidden under search bar - not null, but also not visible and not selected
-                    assert.notEqual(el,null) 
-                    return driver
-                        .is_not_visible(el)
-                        .is_not_selected(el)
-                })
         });
-        
+
 		it.skip('Full Login', function () {
 			this.retries = 1
 			return driver
 				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
         });
-        
+
         it('Quick Login', function () {
-            this.retries = 1 
+            this.retries = 1
             return driver
                 .loginQuick()
         });
@@ -80,9 +66,9 @@ module.exports = function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
                 .click()
-				.waitForElementById(elements.volunteers.active,10000)
-                .getAttribute('value')
-                .then( (value) => {assert.equal(value,1)})
+                .waitForElementToDisappearByClassName(elements.general.spinner)
+                .waitForElementById(elements.volunteers.active,10000)
+                .then(el => driver.is_visible(el).is_selected(el))
 		});
 
 		it('Open active volunteer details', function () {
@@ -95,35 +81,34 @@ module.exports = function () {
 
 		it('Save volunteer information', function () {
 			return driver
-				.waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
-				.then(function (el) {
-					return el.getAttribute('name').then(function name(attr) {
-						fullName = attr.trim();
-						firstName = attr.trim().split(/\s+/).shift()
-						lastName = attr.trim().split(/\s+/).pop()
-					})
-				})
+                .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
+                .getAttribute('name')
+                .then((name) => {
+                    fullName = name.trim();
+                    firstName = name.trim().split(/\s+/).shift()
+                    lastName = name.trim().split(/\s+/).pop()
+                })
+                .back()
+                .waitForElementById(elements.volunteers.active, 5000)
 		});
 
         it('On Active tab after going back', function () {
             return driver
-                .back()
                 .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.volunteers.active)
-                .getAttribute('value')
-                .then((value) => {assert.equal(value,1)})
+                .then(el => driver.is_selected(el))
         });
 
 		it('Mark active volunteer inactive', function () {
+            //todo update this when we have an id for the els under the slider.  Make more compact.
             return driver
                 // on active tab - swipe left on first person
                 .elementById(elements.volunteers.volunteer1.volunteer1)
-                .then(function (el) {
-                    return el.getSize().then((size) => {
-                        height = size.height;
-                        width = size.width;
-                    })
+                .getSize()
+                .then((size) => {
+                    height = size.height;
+                    width = size.width;
                 })
                 .elementById(elements.volunteers.volunteer1.volunteer1)
                 .getLocation()
@@ -133,7 +118,12 @@ module.exports = function () {
                     loc.x = loc.x + width - 75 // just to the left of the right edge of element
                     loc.y = loc.y + height/2 // halfway down the element
                     return driver
-                        .swipe({startX: loc.x, startY: loc.y, offsetX: -(width/2), offsetY: 0,})
+                        .swipe({
+                            startX: loc.x,
+                            startY: loc.y,
+                            offsetX: -(width/2),
+                            offsetY: 0,
+                        })
                 })
                 // tap Mark Inactive - todo - guessing the location of Mark Active - fix this once we have an id to click:
                 .elementById(elements.volunteers.volunteer1.volunteer1)
@@ -150,10 +140,9 @@ module.exports = function () {
         it('Still on the active tab', function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.volunteers.active)
-                .getAttribute('value')
-                .then((value) => {assert.equal(value,1)})
+                .then(el => driver.is_selected(el))
         });
 
         it('Volunteer no longer exists in the active tab', function () {
@@ -163,8 +152,7 @@ module.exports = function () {
                 .sendKeys(fullName)
                 .sleep(500) // wait for results (should be instant)
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .getAttribute('visible')
-                .then((visible) => {assert.equal(visible,false)})
+                .then(el => driver.is_not_visible(el))
                 .then(function () {
                     config.homeScreenStats[0].activecount     -= 1
                     config.homeScreenStats[0].activepercent    = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
@@ -178,13 +166,7 @@ module.exports = function () {
                 .elementById(elements.actionBar.cancel)
                 .click()
                 .elementById(elements.volunteers.active)
-                .then((el) => {
-                    return el
-                        .getAttribute('visible')
-                        .then((visible) => {assert.equal(visible, true)}) // Active is visible - search bar successfully cancelled
-                        .getAttribute('value')
-                        .then((value) => {assert.equal(value,1)}) // Active is selected
-                })
+                .then(el => driver.is_visible(el).is_selected(el))
         });
 
         it('Switch to inactive tab', function () {
@@ -192,8 +174,7 @@ module.exports = function () {
                 .elementById(elements.volunteers.inActive)
                 .click()
                 .elementById(elements.volunteers.inActive)
-                .getAttribute('value')
-                .then((value) => {assert.equal(value,1)})
+                .then(el => driver.is_selected(el))
         });
 
         it('Should be added to inactive tab', function () {
@@ -202,22 +183,26 @@ module.exports = function () {
                 .click()
                 .sendKeys(fullName)
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+                .then(el => driver.is_visible(el))
+                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
                 .then((el) => {
                     return el
-                        .getAttribute('visible')
-                        .then((visible) => {assert.equal(visible,1)}) // name is visible
                         .getAttribute('name')
                         .then((name) => {assert.equal(name.trim(), fullName.trim())}) //full name is as expected
                 })
                 .elementById(elements.actionBar.cancel)
+                .click()
+                .elementById(elements.volunteers.active)
                 .click()
         });
 
         it('Should mark multiple Volunteers Inactive via selecting', function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
-                .recoverFromFailuresVolunteers()
-                //save names of first and second volunteers
+                .then(el => driver.recoverFromFailuresVolunteers(el))
+                .elementById(elements.volunteers.active)
+                .then(el => driver.is_selected(el))
+                //save names of first and second active volunteers
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
                 .getAttribute('name')
                 .then((name) => {vol1FullName = name.trim()})
@@ -241,10 +226,9 @@ module.exports = function () {
         it('Still on the active tab', function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.volunteers.active)
-                .getAttribute('value')
-                .then((value) => {assert.equal(value,1)})
+                .then(el => driver.is_selected(el))
         });
 
         it('Vol1 does not exist in the active tab', function () {
@@ -254,12 +238,11 @@ module.exports = function () {
                 .sendKeys(vol1FullName)
                 .sleep(500) // wait for results (should be instant)
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .getAttribute('visible')
-                .then((visible) => {assert.equal(visible,false)})
+                .then(el => driver.is_not_visible(el))
                 .then(function () {
                     config.homeScreenStats[0].activecount        -= 1
                     config.homeScreenStats[0].inactivecount      += 1
-                    
+
                     let activepercentRaw = (config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100;
                     let inActivePercentRaw = (config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100;
                     console.log('active percent: ' + activepercentRaw);
@@ -275,9 +258,9 @@ module.exports = function () {
                 .elementById(elements.actionBar.cancel)
                 .click()
                 .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.volunteers.active)
-                .then((el) => {return driver.visibleAndSelected(el)})
+                .then(el => driver.is_visible(el).is_selected(el))
         });
 
         it('Switch to inactive tab', function () {
@@ -285,8 +268,7 @@ module.exports = function () {
                 .elementById(elements.volunteers.inActive)
                 .click()
                 .elementById(elements.volunteers.inActive)
-                .getAttribute('value')
-                .then((value) => {assert.equal(value,1)})
+                .then(el => driver.is_selected(el))
         });
 
         it('Vol1 should be added to inactive tab', function () {
@@ -294,44 +276,30 @@ module.exports = function () {
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
                 .sendKeys(vol1FullName)
-                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .then((el) => {return el.isVisible()})//todo test this
-                .then(function (el) {
-                    return el
-                        .getAttribute('visible')
-                        .then(function (visible) {
-                            assert.equal(visible, true) // full name field is present
-                        })
-                        .getAttribute('name')
-                        .then(function (name) {
-                            assert.equal(name.trim(), vol1FullName.trim()) // full name is as expected
-                        })
-                })
+                .elementByXPath(elements.volunteers.volunteer1.fullName)
+                .then(el => driver.is_visible(el))
+                .elementByXPath(elements.volunteers.volunteer1.fullName)
+                .getAttribute('name')
+                .then( (name) => { assert.equal(name.trim(), vol1FullName.trim()) }) // full name is as expected })
                 .elementById(elements.actionBar.cancel)
                 .click()
         });
-        
+
         it('Vol2 should be added to inactive tab', function () {
+            //todo no keys to send - returns false positive
             return driver
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
+                .clear()
                 .sendKeys(vol2FullName)
-                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-                .then(function (el) {
-                    return el
-                        .getAttribute('visible')
-                        .then(function (visible) {
-                            assert.equal(visible, true) // full name field is present
-                        })
-                        .getAttribute('name')
-                        .then(function (name) {
-                            assert.equal(name.trim(), vol2FullName.trim()) // full name is as expected
-                        })
-                })
+                .elementByXPath(elements.volunteers.volunteer1.fullName)
+                .then(el => driver.is_visible(el))
+                .elementByXPath(elements.volunteers.volunteer1.fullName)
+                .getAttribute('name')
+                .then( (name) => { assert.equal(name.trim(), vol2FullName.trim()) }) // full name is as expected })
                 .elementById(elements.actionBar.cancel)
                 .click()
         });
-        
 
 	});
 };

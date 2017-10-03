@@ -215,6 +215,7 @@ class Commons {
                 sqlQuery.getUserId();
             })
             .wait_for_sql('getUserId', 'userId')
+            .sleep(500)
             .then(function setDBName() {
                 sqlQuery.getDatabaseNameAndServer();
             })
@@ -227,7 +228,6 @@ class Commons {
             .waitForElementById(elements.homeScreen.volunteers, 30000)
             .waitForElementToDisappearByClassName(elements.general.spinner)
             .endTotalAndLogTime('Log In')
-            .wait_for_sql('getDatabaseNameAndServer', 'databaseNameAndServer');
 	}
 
     fullLogin(uname, pwd) {
@@ -383,35 +383,32 @@ class Commons {
 	}
 
 	recoverFromFailuresVolunteers(el){
-		return driver
-			.sleep(1)
-			.then(function (el) {
-				if (el === null) { // el not found - reset app and go to Vols page
-					return driver
-						.resetApp()
-						.loginQuick()
-						.elementById(elements.homeScreen.volunteers)
-						.click()
-						.waitForElementToDisappearByClassName(elements.general.spinner)
-				} else if (el != undefined){ // el was found
-					return el
-						.getAttribute('visible') // is el visible?
-						.then((visible) => {
-							if (!visible) { // if not reset app and go to Vols page
-								return driver
-									.resetApp()
-									.loginQuick()
-									.elementById(elements.homeScreen.volunteers)
-									.click()
-									.waitForElementToDisappearByClassName(elements.general.spinner)
-							}
-						})
-				} else if (el === undefined) {
-					console.log('fixme: you must pass an element into recoverFromFailures.'.red.bold);
-				}
-			})
-	}
-
+        console.log('in recoverFromFailuresVolunteers_func, el is ' + el);
+        if (el === null) { // el not found - reset app and go to Vols page
+            return driver
+                .resetApp()
+                .loginQuick()
+                .elementById(elements.homeScreen.volunteers)
+                .click()
+                .waitForElementToDisappearByClassName(elements.general.spinner)
+        } else if (el != undefined){ // el was found
+            return el
+                .getAttribute('visible') // is el visible?
+                .then((visible) => {
+                    if (!visible) { // if not reset app and go to Vols page
+                        return driver
+                            .resetApp()
+                            .loginQuick()
+                            .elementById(elements.homeScreen.volunteers)
+                            .click()
+                            .waitForElementToDisappearByClassName(elements.general.spinner)
+                    }
+                })
+        } else if (el === undefined) {
+            console.log('fixme: you must pass an element into recoverFromFailures.'.red.bold);
+        }
+    }
+    
 	is_selected(el){
 		return el
 			.getAttribute('value')
@@ -427,13 +424,18 @@ class Commons {
 	is_visible(el){
 		return el
 			.getAttribute('visible')
-			.then((visible) => {assert.equal(visible,true)})
-	}
+            .then((visible) => {assert.equal(visible,true)})
+    }
 
 	is_not_visible(el){
-		return el
-			.getAttribute('visible')
-			.then((visible) => {assert.equal(visible,false)})
+        //if el is null it means it's not there at all which should also be ok.
+        if (el === null) {
+            console.log('Warning, the element was null, i.e. it didn\'t exist, did you expect it to be present but not visible?'.yellow.bold);
+        } else if (el !== null) {
+            return el
+                .getAttribute('visible')
+                .then((visible) => {assert.equal(visible,false)})
+        }
 	}
 
 	

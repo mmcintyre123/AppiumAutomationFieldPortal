@@ -45,7 +45,6 @@ wd.addPromiseChainMethod('is_not_selected',commons.is_not_selected)
 wd.addPromiseChainMethod('is_visible',commons.is_visible)
 wd.addPromiseChainMethod('is_not_visible',commons.is_not_visible)
 
-
 exports.should = should;
 exports.expect = expect;
 exports.assert = assert;
