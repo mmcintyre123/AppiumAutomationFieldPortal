@@ -1,7 +1,8 @@
 To do:
 
-	> create mark inactive tests - also use select button
-	> create delete volunteer test
+	> create delete volunteer test.
+	> create all tests for inactive_vols as for active_vols.
+	> write sql to remove volunteers with no names
 	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
 
 	> move project to bitbucket so we can make it private so I can add queries.js to version control.

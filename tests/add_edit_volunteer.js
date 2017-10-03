@@ -1,36 +1,37 @@
 "use strict";
 
 module.exports = function () {
-
+	
+	//vars
 	require('colors');
-	let   wd            = require("wd");
-	let   assert        = require('assert');
-	let   asserters     = wd.asserters;
-	let   cities        = require('cities');
-	let   counties      = require('us-zcta-counties');
-	let   _             = require('underscore');
-	let   childProcess  = require('child_process');
-	let   clip          = require('clipboardy');
-	let   Q             = require('q');
-	let   fsExtra       = require('fs-extra');
-	let   fs            = require('fs');
-	let   pry           = require('pryjs');
-	const sql           = require('mssql');
-	let   _p            = require('../helpers/promise-utils');
-	let   elements      = require('../helpers/elements');
-	let   actions       = require('../helpers/actions');
-	let   store         = require('../helpers/store');
-	let   config        = require('../helpers/config');
-	let   serverConfigs = require('../helpers/appium-servers');
-	let   creds         = require('../credentials');
-	let   sqlQuery      = require('../helpers/queries');
-	let   serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
-	let   args          = process.argv.slice( 2 );
-	let   simulator     = false;
-	let	desired;
-	let driver = config.driver;
-	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
-
+		let   wd            = require("wd");
+		let   assert        = require('assert');
+		let   asserters     = wd.asserters;
+		let   cities        = require('cities');
+		let   counties      = require('us-zcta-counties');
+		let   _             = require('underscore');
+		let   childProcess  = require('child_process');
+		let   clip          = require('clipboardy');
+		let   Q             = require('q');
+		let   fsExtra       = require('fs-extra');
+		let   fs            = require('fs');
+		let   pry           = require('pryjs');
+		const sql           = require('mssql');
+		let   _p            = require('../helpers/promise-utils');
+		let   elements      = require('../helpers/elements');
+		let   actions       = require('../helpers/actions');
+		let   store         = require('../helpers/store');
+		let   config        = require('../helpers/config');
+		let   serverConfigs = require('../helpers/appium-servers');
+		let   creds         = require('../credentials');
+		let   sqlQuery      = require('../helpers/queries');
+		let   serverConfig  = process.env.SAUCE ? serverConfigs.sauce : serverConfigs.local;
+		let   args          = process.argv.slice( 2 );
+		let   simulator     = false;
+		let	desired;
+		let driver = config.driver;
+		let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
+		
 	//todo verify volunteer added in UI, active tab
 	describe("Tests adding and editing volunteers and related actions", function() {
 

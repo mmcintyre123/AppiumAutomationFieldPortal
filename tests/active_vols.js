@@ -76,7 +76,7 @@ module.exports = function () {
 				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
-				.waitForElementById('Volunteer Details', 20000)
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
 		});
 
 		it('Save volunteer information', function () {
@@ -236,6 +236,29 @@ module.exports = function () {
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(vol1FullName)
+                .sleep(500) // wait for results (should be instant)
+                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+                .then(el => driver.is_not_visible(el))
+                .then(function () {
+                    config.homeScreenStats[0].activecount        -= 1
+                    config.homeScreenStats[0].inactivecount      += 1
+
+                    let activepercentRaw = (config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100;
+                    let inActivePercentRaw = (config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100;
+                    console.log('active percent: ' + activepercentRaw);
+                    console.log('inactive percent: ' + inActivePercentRaw);
+
+                    config.homeScreenStats[0].activepercent   = Math.round(activepercentRaw) + '%'
+                    config.homeScreenStats[0].inactivepercent = Math.round(inActivePercentRaw) + '%'
+                })
+        });
+
+        it('Vol2 does not exist in the active tab', function () {
+            return driver
+                .elementById(elements.actionBar.search)
+                .click()
+                .clear()
+                .sendKeys(vol2FullName)
                 .sleep(500) // wait for results (should be instant)
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
                 .then(el => driver.is_not_visible(el))
