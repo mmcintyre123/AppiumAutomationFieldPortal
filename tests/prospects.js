@@ -126,11 +126,11 @@ module.exports = function () {
 				.then(function () {
 					if (!email) { // if email blank or undefined
 						return driver
-							.elementById(elements.addVolunteer.email)
+							.elementById(elements.addEditVolunteer.email)
 							.click()
 							.clear()
 							.sendKeys(firstName + '.' + lastName + (Math.floor(Math.random() * 10000)) + '@callingfromhome.com')
-							.elementById(elements.addVolunteer.email)
+							.elementById(elements.addEditVolunteer.email)
 							.then(function (el) {
 								return el.getAttribute('name').then(function (attr) {
 									email = attr.trim()

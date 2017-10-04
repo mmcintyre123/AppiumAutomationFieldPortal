@@ -81,26 +81,26 @@ module.exports = function () {
 
 		it('Add a volunteer', function () {
 			return driver
-				.waitForElementById(elements.addVolunteer.firstName, 15000)
+				.waitForElementById(elements.addEditVolunteer.firstName, 15000)
 					.click()
 					.sendKeys(config.firstName)
-				.elementById(elements.addVolunteer.lastName)
+				.elementById(elements.addEditVolunteer.lastName)
 					.click()
 					.sendKeys(config.lastName)
-				.elementById(elements.addVolunteer.city)
+				.elementById(elements.addEditVolunteer.city)
 					.click()
 					.sendKeys(config.thisCity) // random city
-				.elementByXPath(elements.addVolunteer.state)
+				.elementByXPath(elements.addEditVolunteer.state)
 					.click()
-					.elementById(elements.addVolunteer.done) // todo scroll state list before picking
+					.elementById(elements.addEditVolunteer.done) // todo scroll state list before picking
 					.click()
-				.elementById(elements.addVolunteer.zip)
+				.elementById(elements.addEditVolunteer.zip)
 					.click()
 					.sendKeys(config.thisZip)
-				.elementById(elements.addVolunteer.county)
+				.elementById(elements.addEditVolunteer.county)
 					.click()
 					.sendKeys(config.thisCounty)
-				.elementById(elements.addVolunteer.email)
+				.elementById(elements.addEditVolunteer.email)
 					.click()
 					.sendKeys(config.email)
 				.elementById(elements.actionBar.save)

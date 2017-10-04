@@ -139,14 +139,14 @@ module.exports = function () {
 
         it('Still on the active tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.active)
-                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.volunteers.active)
                 .then(el => driver.is_selected(el))
         });
-
+        
         it('Volunteer no longer exists in the active tab', function () {
             return driver
+                .elementByIdOrNull(elements.volunteers.active)
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(fullName)
@@ -225,14 +225,14 @@ module.exports = function () {
 
         it('Still on the active tab', function () {
             return driver
-                .elementByIdOrNull(elements.volunteers.active)
-                .then(el => driver.recoverFromFailuresVolunteers(el))
-                .elementById(elements.volunteers.active)
-                .then(el => driver.is_selected(el))
+            .elementById(elements.volunteers.active)
+            .then(el => driver.is_selected(el))
         });
-
+        
         it('Vol1 does not exist in the active tab', function () {
             return driver
+                .elementByIdOrNull(elements.volunteers.active)
+                .then(el => driver.recoverFromFailuresVolunteers(el))
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(vol1FullName)

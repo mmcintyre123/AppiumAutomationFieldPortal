@@ -44,6 +44,7 @@ wd.addPromiseChainMethod('is_selected',commons.is_selected)
 wd.addPromiseChainMethod('is_not_selected',commons.is_not_selected)
 wd.addPromiseChainMethod('is_visible',commons.is_visible)
 wd.addPromiseChainMethod('is_not_visible',commons.is_not_visible)
+wd.addPromiseChainMethod('refresh_vol_or_prospect_list',commons.refresh_vol_or_prospect_list)
 
 exports.should = should;
 exports.expect = expect;

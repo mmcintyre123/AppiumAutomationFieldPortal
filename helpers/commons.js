@@ -114,13 +114,13 @@ class Commons {
 
     beforeEachIt() {
         beforeEach(function() {
-            //test stuff
-            console.log(('Running ' + this.currentTest.title).green.bold.underline);
-            config.currentTest = this.currentTest; // put the currentTest object on Config in case we want to access it mid-test
             //record video
             config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + process.argv.slice(2)[2] + '_' + this.currentTest.title.replace(/\s+/ig, '_') + '.mp4']);
             config.video.on('exit', console.log.bind(console, 'video recording exited'));
             config.video.on('close', console.log.bind(console, 'video recording closed'));
+            //test stuff
+            console.log(('Running ' + this.currentTest.title).green.bold.underline);
+            config.currentTest = this.currentTest; // put the currentTest object on Config in case we want to access it mid-test
             /*
                     //video recorder stuff
                     config.recorder_output = '/Users/mliedtka/AppiumAutomation/video/' + this.currentTest.title.replace(/\s+/ig,'_') + '.mp4';
@@ -140,14 +140,17 @@ class Commons {
             // let allPassed = allPassed && this.currentTest.state === 'passed';
             /* //video recorder stuff config.recorder.stopSaveAndClear(config.recorder_output, function() {}.bind(this)); */
             let thisTest = this.currentTest.title;
-            config.video.kill('SIGINT');
             //test stuff - screenshot on failure, log results to file and store in object to console.log at the end.
             if (this.currentTest.state == 'failed') {
                 console.log(('\n\t' + this.currentTest.err.message).red + '\n');
                 config.wStreamTestResultFile.write('Test Failed: ' + thisTest + '\n');
                 config.testResults.push('\u2717  '.red + thisTest);
                 return driver
-                    .takeScreenshotMethod(thisTest);
+                    .takeScreenshotMethod(thisTest)
+                    .sleep(1999)
+                    .then(() => {
+                        config.video.kill('SIGINT')
+                    })
             }
             else if (this.currentTest.state == 'passed') {
                 config.wStreamTestResultFile.write('Test Passed: ' + thisTest + '\n');
@@ -157,6 +160,12 @@ class Commons {
                 config.wStreamTestResultFile.write('Test ' + this.currentTest.state + ' :' + thisTest + '\n');
                 config.testResults.push('\u003F  '.yellow + thisTest);
             }
+
+            return driver
+                .sleep(1998)
+                .then(() => {
+                    config.video.kill('SIGINT');
+                })
         });
 	}
 
@@ -387,6 +396,7 @@ class Commons {
         if (el === null) { // el not found - reset app and go to Vols page
             return driver
                 .resetApp()
+                .sleep(1000)
                 .loginQuick()
                 .elementById(elements.homeScreen.volunteers)
                 .click()
@@ -398,6 +408,7 @@ class Commons {
                     if (!visible) { // if not reset app and go to Vols page
                         return driver
                             .resetApp()
+                            .sleep(1000)
                             .loginQuick()
                             .elementById(elements.homeScreen.volunteers)
                             .click()
@@ -436,7 +447,39 @@ class Commons {
                 .getAttribute('visible')
                 .then((visible) => {assert.equal(visible,false)})
         }
-	}
+    }
+    
+    refresh_vol_or_prospect_list(){
+        //refresh by swiping and by tapping the bottom just to be safe.
+        //swiping seems more reliable.
+        let swipeDistance;
+        return driver
+            .elementByClassNameOrNull('XCUIElementTypeToolbar')
+            .then((el) => {
+                if (el !== null) {
+                    return el
+                        .click()
+                        .waitForElementToDisappearByClassName(elements.general.spinner)
+                }
+            })
+            .waitForElementByClassName('XCUIElementTypeTable',10000)
+            .getSize()
+            .then((size) => {
+                swipeDistance = size.height - 110 //length of table minus search and toolbar
+            })
+            .elementByClassName('XCUIElementTypeTable')
+            .getLocation()
+            .then((loc) => {
+                return driver
+                    .swipe({
+                        startX: loc.x + 5, //away from the edge
+                        startY: loc.y + 50, //below the search element
+                        offsetX: 0,
+                        offsetY: swipeDistance
+                    })
+            })
+
+    }
 
 	
 
