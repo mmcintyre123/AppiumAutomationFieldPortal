@@ -9,7 +9,7 @@ module.exports = function () {
 	let	Q             = require('q');
 	let	fsExtra       = require('fs-extra');
 	let	fs            = require('fs');
-	let stackTrace    = require('stack-trace');
+	// let stackTrace    = require('stack-trace');
 	let	pry  		  = require('pryjs');
 	const sql         = require('mssql');
 	let	_p            = require('../../helpers/promise-utils');
@@ -71,9 +71,14 @@ module.exports = function () {
 				.loginQuick()
 		});
 		
-        it.only('demonstrate methods: is_selected, is_not_selected, is_visible, is_not_visible', function () {
-            return driver
-                .loginQuick()
+        it('demonstrate methods: is_selected, is_not_selected, is_visible, is_not_visible', function () {
+			return driver
+				.sleep(1)
+				.getUserRoles()
+				.then(() => {
+					console.log(object);
+				})
+				
                 .elementById(elements.homeScreen.volunteers)
                 .click()
                 .waitForElementToDisappearByClassName(elements.general.spinner)
@@ -95,7 +100,7 @@ module.exports = function () {
                 })
         });
 		
-		it.only('should get attribute without .then', function () {
+		it('should get attribute without .then', function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()

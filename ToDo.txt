@@ -1,13 +1,27 @@
 To do:
 
-	> create delete volunteer test.
-	> create all tests for inactive_vols as for active_vols.
-	> write sql to remove volunteers with no names
-	> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
+	Tasks by TEST AREA:
 
-	> move project to bitbucket so we can make it private so I can add queries.js to version control.
-	> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js
-	> Compare Android and iOS accessibility IDs and file issues in 33042.
+		Delete Vols:
+			> create all delete_vol tests for inactive_vols and prospects as for active_vols.
+		
+		Active and Inactive vols:
+			> check the volunteer history messages in volunteer details update in active_vols.js and inactive_vols.js.  Generate history text and verify it's present.
+			
+		Homescreen Counts:
+			> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
+
+	SQL tasks:
+
+		*** > add sql to check DB that status is 1 and active is 0 after marking inactive, or 1 and 1 after marking active
+		*** > add sql to check DB that tags were applied correctly after deleting and status and active are 0
+		> write sql to remove volunteers with no names - can't execute in prod :(
+	
+	GENERAL / FRAMEWORK tasks: 
+		> create source code check in mocha.js and create a cli prompt for whether to update and rebuild (shouldn't need to ever add node updateAndBuild.js to command)
+		> move project to bitbucket so we can make it private so I can add queries.js to version control.
+		> Compare Android and iOS accessibility IDs and file issues in 33042.
+	
 
 Create more tests cases:
 
