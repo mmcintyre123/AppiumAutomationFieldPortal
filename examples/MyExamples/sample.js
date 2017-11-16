@@ -111,27 +111,37 @@ module.exports = function () {
 				})
 		});
 
-		//working 4-28-17 5:59pm --- for connecting to a single server in a test case (it statement)
-		it('Should query sql', function () {
+		
+		it.only('Should connect to sql', function () {
 			return sql
-				.connect(creds.SQLconfigMD1)
-				.then(pool => {
-
-				    // Query
-					return pool
-						.request()
-						// .input('input_parameter', sql.Int, value)
-						.query("\
-							--which houses have more than one primary target\
-							declare @surveyID BigInt=187164;\
-							declare @helperBooks table(Value INT);INSERT INTO @helperBooks select s.booknum from i360_app_canvass.surveys.surveywalkbookassignments s(nolock)INNER JOIN i360portal.dbo.helper h(nolock)on h.helperID=s.idhelper\
-							where s.idsurvey='187164'and h.LogID='1654wseward'\
-							order by s.booknum asc;with Locations_CTE as(select distinct ta.locationID from I360_App_Canvass.Surveys.TargetsAssc ta(nolock)INNER JOIN I360_App_Canvass.Surveys.TargetWalkbookMap map(nolock)on map.IdSurveyTarget=ta.targetID where ta.surveyID= @surveyID and map.BookNum in(select value from @helperBooks)),Count_CTE as(select cte.locationID,SUM(ta.primaryContact)as PrimaryTargetCount,SUM(1-ta.primaryContact)as NonPrimaryTargetCount from Locations_CTE cte INNER JOIN I360_App_Canvass.Surveys.TargetsAssc ta(nolock)on ta.locationID=cte.locationID where ta.surveyID=@surveyID group by cte.locationID)select map.BookNum as'BookNum',f.seq as'HouseNum'from Count_CTE cte INNER JOIN I360_App_Canvass.Surveys.TargetsAssc ta(nolock)on ta.locationID=cte.locationID INNER JOIN I360_App_Canvass.Surveys.TargetLocations tl(nolock)on tl.targetLocationsID=ta.targetLocationsID INNER JOIN I360_App_Canvass.Surveys.Surveys s(nolock)on s.ID=ta.surveyID INNER JOIN I360_App_Canvass.Surveys.WalkBookRoutesStops f(nolock)on f.IDSurveyTarget=ta.targetID INNER JOIN I360_App_Canvass.Surveys.TargetWalkbookMap map(nolock)on map.IdSurveyTarget=ta.targetID INNER JOIN MD_Shield.dbo.Contacts c(nolock)on c.id=ta.contactID where ta.surveyID=@surveyID and map.BookNum in(select value from @helperBooks)and cte.PrimaryTargetCount>1order by map.BookNum asc,f.seq asc option(maxdop 3);return;\
-						")
+				.connect(creds.testPORTAL)
+		});
+		
+		//working 4-28-17 5:59pm --- for connecting to a single server in a test case (it statement)
+		it.only('Should get user geo info from sql', function () {
+			return driver
+				.sleep(1)
+				.then(() => {
+					sqlQuery.getUserGeo()
 				})
-				.then(result => {
-			    	console.dir(result.recordset)
-				})
+				
+//				.then(pool => {
+//
+//				    // Query
+//					return pool
+//						.request()
+//						// .input('input_parameter', sql.Int, value)
+//						.query("\
+//							--which houses have more than one primary target\
+//							declare @surveyID BigInt=187164;\
+//							declare @helperBooks table(Value INT);INSERT INTO @helperBooks select s.booknum from i360_app_canvass.surveys.surveywalkbookassignments s(nolock)INNER JOIN i360portal.dbo.helper h(nolock)on h.helperID=s.idhelper\
+//							where s.idsurvey='187164'and h.LogID='1654wseward'\
+//							order by s.booknum asc;with Locations_CTE as(select distinct ta.locationID from I360_App_Canvass.Surveys.TargetsAssc ta(nolock)INNER JOIN I360_App_Canvass.Surveys.TargetWalkbookMap map(nolock)on map.IdSurveyTarget=ta.targetID where ta.surveyID= @surveyID and map.BookNum in(select value from @helperBooks)),Count_CTE as(select cte.locationID,SUM(ta.primaryContact)as PrimaryTargetCount,SUM(1-ta.primaryContact)as NonPrimaryTargetCount from Locations_CTE cte INNER JOIN I360_App_Canvass.Surveys.TargetsAssc ta(nolock)on ta.locationID=cte.locationID where ta.surveyID=@surveyID group by cte.locationID)select map.BookNum as'BookNum',f.seq as'HouseNum'from Count_CTE cte INNER JOIN I360_App_Canvass.Surveys.TargetsAssc ta(nolock)on ta.locationID=cte.locationID INNER JOIN I360_App_Canvass.Surveys.TargetLocations tl(nolock)on tl.targetLocationsID=ta.targetLocationsID INNER JOIN I360_App_Canvass.Surveys.Surveys s(nolock)on s.ID=ta.surveyID INNER JOIN I360_App_Canvass.Surveys.WalkBookRoutesStops f(nolock)on f.IDSurveyTarget=ta.targetID INNER JOIN I360_App_Canvass.Surveys.TargetWalkbookMap map(nolock)on map.IdSurveyTarget=ta.targetID INNER JOIN MD_Shield.dbo.Contacts c(nolock)on c.id=ta.contactID where ta.surveyID=@surveyID and map.BookNum in(select value from @helperBooks)and cte.PrimaryTargetCount>1order by map.BookNum asc,f.seq asc option(maxdop 3);return;\
+//						")
+//				})
+//				.then(result => {
+//			    	console.dir(result.recordset)
+//				})
 
 				//.catch(err => {
 				//	console.log('Something went wrong'.red.bold)

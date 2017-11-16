@@ -4,6 +4,7 @@ require( 'colors' );
 let childProcess = require( 'child_process' );
 let intercept    = require('intercept-stdout');
 let config       = require( './helpers/config');
+let creds        = require('./credentials');
 let loaded       = false;
 let rawArgs      = process.argv.slice( 2 );
 let args         = [ 'mocha.js' ];
@@ -11,6 +12,10 @@ let appium;
 let homeDir = function () {
 	return process.env[ ( process.platform == 'win32' ) ? 'USERPROFILE' : 'HOME' ];
 };
+
+// make sure Cisco is not running then start VPN
+childProcess.exec('pkill -9 "Cisco"')
+childProcess.exec(creds.vpnDisconnectReconnect)
 
 for ( var i  in rawArgs ) {
 	args.push( rawArgs[ i ] );
@@ -27,24 +32,25 @@ for (var i in args ) {
 
 	switch ( arg ) {
 		case '--sim' : {
-			appium = childProcess.spawn( 'appium', [
+			appium = childProcess.spawn( 'appium', [ 
 				'--strict-caps',
 				'--session-override',
 				'--log-level', 'debug',
 				'--debug-log-spacing',
 				'--log', '/Users/mliedtka/appium_logs1/appium.log',
-				'--address', "localhost",
+				'--address', 'localhost',
 				'--default-capabilities', '{ \
-						"bundleId": "com.i360.i360FieldPortal",\
-						"showIOSLog":"false", \
-						"autoAcceptAlerts":"true", \
-						"nativeInstrumentsLib":"true", \
-						"automationName":"XCUITest", \
-						"clearSystemFiles":"true", \
-						"preventWDAAttachments":"true",\
-						"newCommandTimeout": false, \
-						"fullReset":"false", \
-						"noReset":"true"\
+					"bundleId":"com.i360.i360FieldPortal", \
+					"showIOSLog":false, \
+					"autoAcceptAlerts":true,\
+					"nativeInstrumentsLib":true, \
+					"automationName":"XCUITest",\
+					"clearSystemFiles":true, \
+					"preventWDAAttachments":true, \
+					"newCommandTimeout":0, \
+					"fullReset":false, \
+					"noReset":true, \
+					"connectHardwareKeyboard":true \
 				}'
 			]);
 			break;
@@ -101,6 +107,7 @@ appium.on('exit', function (code, signal) {
 });
 
 /*
+//ask Mike Meyer about this
 appium.stdout.on( 'data', function ( data ) {
 
 	var buff = new Buffer( data );
@@ -139,7 +146,7 @@ appium.stdout.on( 'data', function ( data ) {
 		console.log( buff.toString( 'utf8' ).replace( '\n', '' ) );
 	}
 
-	if ( stripColors( buff.toString( 'utf8' ) ) === '[Appium] Welcome to Appium v1.6.5\n' && !loaded ) {
+	if ( stripColors( buff.toString( 'utf8' ) ) === '[Appium] Welcome to Appium v1.7.1\n' && !loaded ) {
 
 		loaded = true;
 		let mocha = childProcess.spawn( 'mocha', args, {stdio: "inherit"} ); //the 'inherit' preserves the colors from mocha process

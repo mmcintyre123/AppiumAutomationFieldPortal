@@ -29,7 +29,7 @@ module.exports = function () {
 
 	//todo add a tag and note to volunteer created from prospect directly after creation.\
 
-	describe("All Prospect-related tests", function() {
+	describe("All Prospect-related tests".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
@@ -42,12 +42,12 @@ module.exports = function () {
 				.fullLogin()
 		});
 		
-		it('Quick Login', function () {
+		it('Quick Login'.bgWhite.blue, function () {
 			return driver
 				.loginQuick()
 		});
 
-		it('Navigate to prospects list (prospects tab highlighted after selecting)', function () {
+		it('Navigate to prospects list (prospects tab highlighted after selecting)'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
@@ -63,7 +63,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Open prospect details', function () {
+		it('Open prospect details'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.prospects.prospect1.prospect1)
 				.click()
@@ -71,7 +71,7 @@ module.exports = function () {
 				.waitForElementById('Prospect Details', 20000)
 		});
 
-		it('Save prospect information', function () {
+		it('Save prospect information'.bgWhite.blue, function () {
 			return driver
 				.waitForElementByXPath(elements.prospectDetails.firstAndLastName, 10000) //first and last name
 				.then(function (el) {
@@ -118,7 +118,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Turn a prospect into a volunteer', function () {
+		it('Turn a prospect into a volunteer'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.addAsVol)
 				.click()
@@ -148,12 +148,12 @@ module.exports = function () {
 				})
 		});
 
-		it('On Volunteer Details after turning Prospect into Volunteer', function () {
+		it('On Volunteer Details after turning Prospect into Volunteer'.bgWhite.blue, function () {
 			return driver
 				.waitForElementById('Volunteer Details', 10000)
 		});
 
-		it('Compare Volunteer Info :: Former Prospect Info -- FIRST and LAST NAME match', function () {
+		it('Compare Volunteer Info :: Former Prospect Info -- FIRST and LAST NAME match'.bgWhite.blue, function () {
 			return driver
 				// verify info based on prospect info above
 				.elementByXPath(elements.vol_details.firstAndLastName) //first and last name
@@ -190,7 +190,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Compare Volunteer Info :: Former Prospect Info -- STATE matches', function () {
+		it('Compare Volunteer Info :: Former Prospect Info -- STATE matches'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.vol_details.address) // use this to get the state
 				.then(function (el) {
@@ -201,7 +201,7 @@ module.exports = function () {
 				})
 		});
 
-		it('On Prospect list after returning from Vol Details, after prospect made a volunteer', function () {
+		it('On Prospect list after returning from Vol Details, after prospect made a volunteer'.bgWhite.blue, function () {
 			return driver
 				.back()
 				.waitForElementById(elements.volunteers.prospects,10000)
@@ -213,14 +213,14 @@ module.exports = function () {
 				})
 		});
 
-		it('On Home Screen', function () {
+		it('On Home Screen'.bgWhite.blue, function () {
 			return driver
 				.back()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.homeScreen.volunteers, 15000)
 		});
 
-		it('Prospect made into Volunteer appears in active volunteer list', function () {
+		it('Prospect made into Volunteer appears in active volunteer list'.bgWhite.blue, function () {
 			return driver
 				.elementByIdOrNull(elements.homeScreen.volunteers) // ensure we're on the login screen, if not, reset app
 				.then(function (el) {

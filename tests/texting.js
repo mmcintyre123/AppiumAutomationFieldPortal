@@ -33,17 +33,17 @@ module.exports = function () {
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
     config.textEnabled = false
 
-    describe('Verify the texting icon is present if the user has the role, and absent if the user does not have the role', function () {
+    describe('Verify the texting icon is present if the user has the role, and absent if the user does not have the role'.bgYellow.black, function () {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Should determine if texting role is present', function () {
+		it('Should determine if texting role is present'.bgWhite.blue, function () {
 			this.retries = 1
 			return driver
 				.sleep(1)
 				.then(function getUserId() {
-					sqlQuery.getUserId()
+					sqlQuery.getUserId(config.thisUser) // todo fix this, it's failing
 				})
 				.wait_for_sql('getUserId', 'userId')
 				.then(function () {
@@ -59,13 +59,13 @@ module.exports = function () {
 				})
 		});
 		
-    	it('Full Login', function () {
+    	it('Full Login'.bgWhite.blue, function () {
 			this.retries = 1
     		return driver
     			.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
     	});
 		
-        it('Verify the text icon is available when the role is present and absent if it is not present', function () {
+        it('Verify the text icon is available when the role is present and absent if it is not present'.bgWhite.blue, function () {
             return driver
                 .sleep(1)
                 .then(function () {

@@ -26,6 +26,7 @@ exports.iosSim2 = {
 	'platformName'   : 'iOS',
 	'platformVersion': '10.3',
 	'deviceName'     : 'iPad Air 2'
+	//todo try isHeadless cap
 };
 
 //ios Simulator #3

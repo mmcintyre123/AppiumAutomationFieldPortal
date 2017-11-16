@@ -27,26 +27,26 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("Logs in and verifies the counts and percents on the home screen", function() {
+	describe("Logs in and verifies the counts and percents on the home screen".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
 		//set new percentages based on current expected counts
 
-		it('Should set expected homeScreenStat percentages', function () {
+		it('Should set expected homeScreenStat percentages'.bgWhite.blue, function () {
 			config.homeScreenStats[0].activepercent = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
 			config.homeScreenStats[0].inactivepercent = Math.round((config.homeScreenStats[0].inactivecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
 			config.homeScreenStats[0].reactivatedpercent = Math.round((config.homeScreenStats[0].reactivatedcount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
 		});
 		
-		it('Full Login', function () {
+		it('Full Login'.bgWhite.blue, function () {
 			this.retries = 1
 			return driver
 				.fullLogin()
 		});
 
-		it('Volunteer Base Count, String', function () {
+		it('Volunteer Base Count, String'.bgWhite.blue, function () {
 			console.log(('First verify counts against expected tally based on test actions:\n').green.bold.underline)
 			return driver
 				.elementByXPath(elements.homeScreen.volBaseString)
@@ -58,18 +58,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Active Count', function () {
+		it('Active Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.activeCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].activecount)
+						assert.equal(toString(count), config.homeScreenStats[0].activecount)
 						console.log('activecount: ' + count + ' == ' + config.homeScreenStats[0].activecount)
 					})
 				})
 		});
 
-		it('Active Percent', function () {
+		it('Active Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.activePercent)
 				.then(function (el) {
@@ -80,18 +80,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Inactive Count', function () {
+		it('Inactive Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.inActiveCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].inactivecount)
+						assert.equal(toString(count), config.homeScreenStats[0].inactivecount)
 						console.log('inactivecount: ' + count + ' == ' + config.homeScreenStats[0].inactivecount)
 					})
 				})
 		});
 
-		it('Inactive Percent', function () {
+		it('Inactive Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.inActivePercent)
 				.then(function (el) {
@@ -102,18 +102,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Re-activated Count', function () {
+		it('Re-activated Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.reActivatedCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].reactivatedcount)
+						assert.equal(toString(count), config.homeScreenStats[0].reactivatedcount)
 						console.log('reactivatedcount: ' + count + ' == ' + config.homeScreenStats[0].reactivatedcount)
 					})
 				})
 		});
 
-		it('Re-activated Percent', function () {
+		it('Re-activated Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.reActivatedPercent)
 				.then(function (el) {
@@ -124,7 +124,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Get home screen stats from SQL', function () {
+		it('Get home screen stats from SQL'.bgWhite.blue, function () {
 			console.log(('Next verify tally against values in SQL:\n').green.bold.underline)
 			return driver
 				.sleep(1)
@@ -134,7 +134,7 @@ module.exports = function () {
 				.wait_for_sql('getHomeScreenStats', 'homeScreenStats')
 		});
 
-		it('Volunteer Base Count, String', function () {
+		it('Volunteer Base Count, String'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.volBaseString)
 				.then(function (el) {
@@ -145,18 +145,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Active Count', function () {
+		it('Active Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.activeCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].activecount)
+						assert.equal(toString(count), config.homeScreenStats[0].activecount)
 						console.log('activecount: ' + count + ' == ' + config.homeScreenStats[0].activecount)
 					})
 				})
 		});
 
-		it('Active Percent', function () {
+		it('Active Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.activePercent)
 				.then(function (el) {
@@ -167,18 +167,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Inactive Count', function () {
+		it('Inactive Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.inActiveCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].inactivecount)
+						assert.equal(toString(count), config.homeScreenStats[0].inactivecount)
 						console.log('inactivecount: ' + count + ' == ' + config.homeScreenStats[0].inactivecount)
 					})
 				})
 		});
 
-		it('Inactive Percent', function () {
+		it('Inactive Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.inActivePercent)
 				.then(function (el) {
@@ -189,18 +189,18 @@ module.exports = function () {
 				})
 		});
 
-		it('Re-activated Count', function () {
+		it('Re-activated Count'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.reActivatedCount)
 				.then(function (el) {
 					return el.getAttribute('name').then(function (count) {
-						assert.equal(count, config.homeScreenStats[0].reactivatedcount)
+						assert.equal(toString(count), config.homeScreenStats[0].reactivatedcount)
 						console.log('reactivatedcount: ' + count + ' == ' + config.homeScreenStats[0].reactivatedcount)
 					})
 				})
 		});
 
-		it('Re-activated Percent', function () {
+		it('Re-activated Percent'.bgWhite.blue, function () {
 			return driver
 				.elementByXPath(elements.homeScreen.reActivatedPercent)
 				.then(function (el) {

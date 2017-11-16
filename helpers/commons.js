@@ -2,26 +2,38 @@
 
 require('colors');
 require('./setup');
-let repl         = require('repl');
-let _            = require('underscore');
-let wd           = require('wd');
-let fs           = require('fs');
-let fsExtra      = require('fs-extra');
-let assert       = require('assert');
-let pry          = require('pryjs');
-let creds        = require('../credentials');
-let config       = require('./config');
-let store        = require('./Store');
-let elements     = require('./elements');
-let sqlQuery     = require('./queries');
-let commons      = require('./commons');
-let _p           = require('./promise-utils');
-let intercept    = require('intercept-stdout');
-let childProcess = require('child_process');
-let Mocha        = require('mocha');
-let mocha        = new Mocha({});
-let driver       = config.driver;
+let repl              = require('repl');
+let _                 = require('underscore');
+let wd                = require('wd');
+let fs                = require('fs');
+let fsExtra           = require('fs-extra');
+let assert            = require('assert');
+let pry               = require('pryjs');
+let creds             = require('../credentials');
+let config            = require('./config');
+let store             = require('./Store');
+let elements          = require('./elements');
+let sqlQuery          = require('./queries');
+let commons           = require('./commons');
+let _p                = require('./promise-utils');
+let intercept         = require('intercept-stdout');
+let childProcess      = require('child_process');
+let Mocha             = require('mocha');
+let loginQuickCounter = 0
+//todo: finish this
+let mocha = new Mocha({
+    reporter: 'mochawesome',
+    reporterOptions: {
+      reportDir: '',
+      reportFilename: 'FieldPortalTestResults' + config.date,
+      enableCharts: false
+    }
+});
 
+let driver       = config.driver;
+let stripColors = function ( string ) {
+	return string.replace( /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, '' );
+};
 class Commons {
     constructor() {
         this.os = config.desired.platformName;
@@ -90,8 +102,8 @@ class Commons {
             fsExtra.mkdirs('./video');
             fsExtra.removeSync('./loadTimeLogs');
             fsExtra.mkdirs('./loadTimeLogs');
-            fsExtra.removeSync('./test_results');
-            fsExtra.mkdirs('./test_results');
+            // fsExtra.removeSync('./test_results');
+            // fsExtra.mkdirs('./test_results');
             // Open writeStream for logTime file using current local time
             require('moment-timezone');
             let moment = require('moment');
@@ -115,7 +127,8 @@ class Commons {
     beforeEachIt() {
         beforeEach(function() {
             //record video
-            config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + process.argv.slice(2)[2] + '_' + this.currentTest.title.replace(/\s+/ig, '_') + '.mp4']);
+            let thisTest = stripColors(this.currentTest.title);
+            config.video = childProcess.spawn('xcrun', ['simctl', 'io', 'booted', 'recordVideo', '/Users/mliedtka/AppiumAutomationFieldPortal/video/' + process.argv.slice(2)[2] + '_' + thisTest.replace(/\s+/ig, '_') + '.mp4']);
             config.video.on('exit', console.log.bind(console, 'video recording exited'));
             config.video.on('close', console.log.bind(console, 'video recording closed'));
             //test stuff
@@ -139,7 +152,7 @@ class Commons {
         afterEach(function() {
             // let allPassed = allPassed && this.currentTest.state === 'passed';
             /* //video recorder stuff config.recorder.stopSaveAndClear(config.recorder_output, function() {}.bind(this)); */
-            let thisTest = this.currentTest.title;
+            let thisTest = stripColors(this.currentTest.title);
             //test stuff - screenshot on failure, log results to file and store in object to console.log at the end.
             if (this.currentTest.state == 'failed') {
                 console.log(('\n\t' + this.currentTest.err.message).red + '\n');
@@ -147,7 +160,7 @@ class Commons {
                 config.testResults.push('\u2717  '.red + thisTest);
                 return driver
                     .takeScreenshotMethod(thisTest)
-                    .sleep(1999)
+                    .sleep(1999) //time for action to complete and be captured by video
                     .then(() => {
                         config.video.kill('SIGINT')
                     })
@@ -221,7 +234,7 @@ class Commons {
                 }
             })
             .then(function getUserId() {
-                sqlQuery.getUserId();
+                sqlQuery.getUserId(config.thisUser)
             })
             .wait_for_sql('getUserId', 'userId')
             .sleep(500)
@@ -263,8 +276,8 @@ class Commons {
             }
         }
         // redefine config.thisUser in case uname was passed to function
-        if (uname.substring(0, 5) === 'test_') {
-            config.thisUser = uname.substring(5);
+        if (uname.substring(0, 5) === 'test_') { 
+            config.thisUser = uname.substring(5); 
         }
         else {
             config.thisUser = uname;
@@ -314,14 +327,14 @@ class Commons {
                 }
             })
             .then(function(attr) {
-                if (attr == false || attr == 'false') {
+                if (attr == false || attr == 'false' || attr == 0 || !attr) {
                     return driver
                         .elementById(elements.loginLogout.rememberMe)
                         .click();
                 }
             })
             .then(function getUserId() {
-                sqlQuery.getUserId();
+                sqlQuery.getUserId(config.thisUser);
             })
             .wait_for_sql('getUserId', 'userId')
             .then(function setDBName() {
@@ -359,11 +372,11 @@ class Commons {
                         console.log('Waiting for ' + sql_query_name + ' to return....\n'
                             + sql_query_name + '.length = ' + Object.keys(config[recordset_object] || []).length);
                     }
-                    else if (counter > 1 && counter < 10) {
+                    else if (counter > 1 && counter < 30) {
                         console.log('Waiting...');
                     }
-                    else if (counter > 10) {
-                        reject(new Error('SQL Query ' + sql_query_name + ' did not return within twenty seconds.'));
+                    else if (counter > 30) {
+                        throw new Error('SQL Query ' + sql_query_name + ' did not return within one minute.') // maybe this will make the test fail?
                     }
                 }
             })();
@@ -392,7 +405,7 @@ class Commons {
 	}
 
 	recoverFromFailuresVolunteers(el){
-        console.log('in recoverFromFailuresVolunteers_func, el is ' + el);
+        console.log('in recoverFromFailuresVolunteers, el is ' + el);
         if (el === null) { // el not found - reset app and go to Vols page
             return driver
                 .resetApp()
@@ -405,7 +418,7 @@ class Commons {
             return el
                 .getAttribute('visible') // is el visible?
                 .then((visible) => {
-                    if (!visible) { // if not reset app and go to Vols page
+                    if (visible == 'false') { // if not reset app and go to Vols page
                         return driver
                             .resetApp()
                             .sleep(1000)
@@ -423,7 +436,7 @@ class Commons {
 	is_selected(el){
 		return el
 			.getAttribute('value')
-			.then((value) => {assert.equal(value,true)})
+			.then((value) => {assert.equal(value,'1')})
 	}
 
 	is_not_selected(el){
@@ -435,7 +448,7 @@ class Commons {
 	is_visible(el){
 		return el
 			.getAttribute('visible')
-            .then((visible) => {assert.equal(visible,true)})
+            .then((visible) => {assert.equal(visible,'true')})
     }
 
 	is_not_visible(el){
@@ -445,7 +458,7 @@ class Commons {
         } else if (el !== null) {
             return el
                 .getAttribute('visible')
-                .then((visible) => {assert.equal(visible,false)})
+                .then((visible) => {assert.equal(visible,'false')})
         }
     }
     

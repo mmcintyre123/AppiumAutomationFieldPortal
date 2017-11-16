@@ -11,6 +11,8 @@ To do:
 		Homescreen Counts:
 			> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
 
+		> make sure we add countyname to all created contacts
+
 	SQL tasks:
 
 		*** > add sql to check DB that status is 1 and active is 0 after marking inactive, or 1 and 1 after marking active
@@ -21,6 +23,9 @@ To do:
 		> create source code check in mocha.js and create a cli prompt for whether to update and rebuild (shouldn't need to ever add node updateAndBuild.js to command)
 		> move project to bitbucket so we can make it private so I can add queries.js to version control.
 		> Compare Android and iOS accessibility IDs and file issues in 33042.
+		> Make sure automation doesn't bail after encountering an error like:
+			Uncaught Error: SQL Query getUserGeo did not return within one minute.
+				at Timeout.wait_1 [as _onTimeout] (helpers/commons.js:379:31)
 	
 
 Create more tests cases:

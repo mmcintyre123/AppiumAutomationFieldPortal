@@ -7,6 +7,14 @@ let wd     = require('wd'),
     fs     = require('fs-extra');
 const resizeImg = require('resize-img');
 
+exports.customTap = function (el, x, y) {
+  // x and y should be offsets
+  let action = new wd.TouchAction(this);
+  action
+    .tap({el: el, x: x, y: y})
+    .release();
+  return this.performTouchAction(action);
+};
 
 exports.swipe = function (opts) {
   let action = new wd.TouchAction();

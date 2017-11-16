@@ -31,18 +31,18 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("Describe the test category...defines the group of tests specified below", function() {
+	describe("Describe the test category...defines the group of tests specified below".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Full Login', function () {
+		it('Full Login'.bgWhite.blue, function () {
 			this.retries = 1
 			return driver
 				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
 		});
 
-		it('Should do what...', function () {
+		it('Should do what...'.bgWhite.blue, function () {
 			return driver
 
 

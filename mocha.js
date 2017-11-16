@@ -131,26 +131,26 @@ config.set({
 require("./helpers/setup");
 let commons = require( './helpers/commons' );
 
-describe( 'Automation Test in Progress!'.green, function () {
+describe( 'Automation Test in Progress!\n'.green, function () {
 
 	this.timeout( timeout ); // total time limit for all tests to complete
 	let allPassed = true;
-	// require( './helpers/logging' ).configure( driver );
 
 	commons.beforeAll();
 	commons.beforeEachIt();
 	commons.afterEachIt();
 	commons.afterAll();
 
-	describe( 'Running automation, please wait for all tests to complete!'.green, function () {
-/*
-		describe( 'Running "SourceCode Check and SourceCode updates" Test.'.red, function () {
-
+	describe( 'Running automation, please wait for all tests to complete!\n'.green, function () {
+		
+		/*
+		describe( 'Running "SourceCode Check and SourceCode updates" Test.\n'.red, function () {
+			
 			let run = require( './TestFiles.js' );
-				run.sourceCodeCheck( 'gitPullCheck' );
-				//run.sourceCodeCheck( 'buildUpdates' );
+			run.sourceCodeCheck( 'gitPullCheck' );
+			//run.sourceCodeCheck( 'buildUpdates' );
 		} );
-
+		
 		describe( 'Running Sync Smoke Test'.red, function () {
 
 			let run = require( './TestFiles.js' );
@@ -158,19 +158,19 @@ describe( 'Automation Test in Progress!'.green, function () {
 		} );
 */
 
-		describe( 'Run icon color tests'.green, function () {
+		describe( 'Running Tests:'.green, function () {
 
 			let devlopeApp = true; //todo figure out what this is for
 
 			let run = require( './TestFiles.js' );
 				// run.sampleTests('sample')
-				// run.sampleTests( 'login_counts_homescreen_initial' );
-				// run.sampleTests( 'clean_data' );
-				// run.sampleTests( 'add_edit_volunteer' );
-				// run.sampleTests( 'texting' );
-				// run.sampleTests( 'prospects' );
-				// run.sampleTests( 'inactive_vols' );
-				// run.sampleTests( 'active_vols' );
+				run.sampleTests( 'login_counts_homescreen_initial' );
+				run.sampleTests( 'clean_data' );
+				run.sampleTests( 'add_edit_volunteer' );
+				run.sampleTests( 'texting' );
+				run.sampleTests( 'prospects' );
+				run.sampleTests( 'inactive_vols' );
+				run.sampleTests( 'active_vols' );
 				run.sampleTests( 'delete_volunteers' );
 				// run.sampleTests( 'login_counts_homescreen_final' );
 		} );

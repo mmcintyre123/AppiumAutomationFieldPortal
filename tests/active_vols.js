@@ -31,7 +31,7 @@ module.exports = function () {
 	let	  desired;
 	let   commons       = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("Tests in the Active tab", function() {
+	describe("Tests in the Active tab".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
@@ -56,13 +56,13 @@ module.exports = function () {
 				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
         });
 
-        it('Quick Login', function () {
+        it('Quick Login'.bgWhite.blue, function () {
             this.retries = 1
             return driver
                 .loginQuick()
         });
 
-		it('Navigate to active volunteer list - tab is selected by default', function () {
+		it('Navigate to active volunteer list - tab is selected by default'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
                 .click()
@@ -71,7 +71,7 @@ module.exports = function () {
                 .then(el => driver.is_visible(el).is_selected(el))
 		});
 
-		it('Open active volunteer details', function () {
+		it('Open active volunteer details'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
@@ -79,7 +79,7 @@ module.exports = function () {
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
 		});
 
-		it('Save volunteer information', function () {
+		it('Save volunteer information'.bgWhite.blue, function () {
 			return driver
                 .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
                 .getAttribute('name')
@@ -92,7 +92,7 @@ module.exports = function () {
                 .waitForElementById(elements.volunteers.active, 5000)
 		});
 
-        it('On Active tab after going back', function () {
+        it('On Active tab after going back'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(el => driver.recoverFromFailuresVolunteers(el))
@@ -100,7 +100,7 @@ module.exports = function () {
                 .then(el => driver.is_selected(el))
         });
 
-		it('Mark active volunteer inactive', function () {
+		it('Mark active volunteer inactive'.bgWhite.blue, function () {
             //todo update this when we have an id for the els under the slider.  Make more compact.
             return driver
                 // on active tab - swipe left on first person
@@ -137,13 +137,13 @@ module.exports = function () {
                 .waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-        it('Still on the active tab', function () {
+        it('Still on the active tab'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.volunteers.active)
                 .then(el => driver.is_selected(el))
         });
         
-        it('Volunteer no longer exists in the active tab', function () {
+        it('Volunteer no longer exists in the active tab'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(el => driver.recoverFromFailuresVolunteers(el))
@@ -161,7 +161,7 @@ module.exports = function () {
                 })
         });
 
-        it('Cancel search', function () {
+        it('Cancel search'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.actionBar.cancel)
                 .click()
@@ -169,7 +169,7 @@ module.exports = function () {
                 .then(el => driver.is_visible(el).is_selected(el))
         });
 
-        it('Switch to inactive tab', function () {
+        it('Switch to inactive tab'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.volunteers.inActive)
                 .click()
@@ -177,7 +177,7 @@ module.exports = function () {
                 .then(el => driver.is_selected(el))
         });
 
-        it('Should be added to inactive tab', function () {
+        it('Should be added to inactive tab'.bgWhite.blue, function () {
             return driver
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
@@ -196,7 +196,7 @@ module.exports = function () {
                 .click()
         });
 
-        it('Should mark multiple Volunteers Inactive via selecting', function () {
+        it('Should mark multiple Volunteers Inactive via selecting'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(el => driver.recoverFromFailuresVolunteers(el))
@@ -223,13 +223,13 @@ module.exports = function () {
                 .waitForElementToDisappearByClassName(elements.general.spinner)
         });
 
-        it('Still on the active tab', function () {
+        it('Still on the active tab'.bgWhite.blue, function () {
             return driver
             .elementById(elements.volunteers.active)
             .then(el => driver.is_selected(el))
         });
         
-        it('Vol1 does not exist in the active tab', function () {
+        it('Vol1 does not exist in the active tab'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(el => driver.recoverFromFailuresVolunteers(el))
@@ -253,7 +253,7 @@ module.exports = function () {
                 })
         });
 
-        it('Vol2 does not exist in the active tab', function () {
+        it('Vol2 does not exist in the active tab'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.actionBar.search)
                 .click()
@@ -276,7 +276,7 @@ module.exports = function () {
                 })
         });
 
-        it('Cancel search', function () {
+        it('Cancel search'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.actionBar.cancel)
                 .click()
@@ -286,7 +286,7 @@ module.exports = function () {
                 .then(el => driver.is_visible(el).is_selected(el))
         });
 
-        it('Switch to inactive tab', function () {
+        it('Switch to inactive tab'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.volunteers.inActive)
                 .click()
@@ -294,7 +294,7 @@ module.exports = function () {
                 .then(el => driver.is_selected(el))
         });
 
-        it('Vol1 should be added to inactive tab', function () {
+        it('Vol1 should be added to inactive tab'.bgWhite.blue, function () {
             return driver
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
@@ -308,7 +308,7 @@ module.exports = function () {
                 .click()
         });
 
-        it('Vol2 should be added to inactive tab', function () {
+        it('Vol2 should be added to inactive tab'.bgWhite.blue, function () {
             //todo no keys to send - returns false positive
             return driver
                 .waitForElementById(elements.actionBar.search,10000)

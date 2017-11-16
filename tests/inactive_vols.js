@@ -27,20 +27,20 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("All inactive volunteer-related tests", function() {
+	describe("All inactive volunteer-related tests".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 		let firstName, lastName, fullName, email, state, phone, width, height;
 		config.searchResults = []
 
-		it('Full Login', function () {
+		it('Full Login'.bgWhite.blue, function () {
             this.retries = 1
 			return driver
 				.fullLogin()
 		});
 
-		it('Navigate to inactive volunteer list - tab is highlighted after selecting', function () {
+		it('Navigate to inactive volunteer list - tab is highlighted after selecting'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
@@ -56,7 +56,7 @@ module.exports = function () {
 				})
 		});
 
-		it('Open inactive volunteer details', function () {
+		it('Open inactive volunteer details'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
@@ -64,7 +64,7 @@ module.exports = function () {
 				.waitForElementById('Volunteer Details', 20000)
 		});
 
-		it('Save volunteer information', function () {
+		it('Save volunteer information'.bgWhite.blue, function () {
 			return driver
 				.waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
 				.then(function (el) {
@@ -77,7 +77,7 @@ module.exports = function () {
                 .back()
 		});
 
-		it('Mark inactive volunteer active', function () {
+		it('Mark inactive volunteer active'.bgWhite.blue, function () {
 			return driver
                 .elementByIdOrNull(elements.volunteers.inActive)
                 .then(function (el) {
@@ -130,7 +130,7 @@ module.exports = function () {
                 .waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-        it('Still on the inactive tab', function () {
+        it('Still on the inactive tab'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.volunteers.inActive)
                 .then(function (el) {
@@ -140,7 +140,7 @@ module.exports = function () {
                 })
         });
 
-        it('Volunteer no longer exists in the inactive tab', function () {
+        it('Volunteer no longer exists in the inactive tab'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.inActive)
                 .then(function (el) {
@@ -171,7 +171,7 @@ module.exports = function () {
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
                 .then(function (el) {
                     return el.getAttribute('visible').then(function (visible) {
-                        assert.equal(visible, false)
+                        assert.equal(visible, 'false')
                     })
                 })
                 .then(function () {
@@ -186,13 +186,13 @@ module.exports = function () {
                 })
         });
         
-        it('Cancel search', function () {
+        it('Cancel search'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.actionBar.cancel)
                 .click()
         });
 
-        it('Switch to active tab', function () {
+        it('Switch to active tab'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then(function (el) {
@@ -225,7 +225,7 @@ module.exports = function () {
                 })
         });
                 
-        it('Should be added to active tab', function () {
+        it('Should be added to active tab'.bgWhite.blue, function () {
             return driver
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
@@ -235,7 +235,7 @@ module.exports = function () {
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
                 .then(function (el) {
                     return el.getAttribute('visible').then(function (visible) {
-                        assert.equal(visible, true)
+                        assert.equal(visible, 'true')
                     })
                 })
                 .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)

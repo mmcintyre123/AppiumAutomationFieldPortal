@@ -31,11 +31,11 @@ module.exports = function () {
 	let driver = config.driver;
 	let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
 
-	describe("Describe the test category...defines the group of tests specified below", function() {
+	describe("Deleting Volunteers".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
-		let vol1FullName, vol2FullName, firstName, lastName, fullName, email, state, phone, width, height;
+		let vol1FirstName, vol1LastName, vol2FirstName, vol2LastName, vol1FullName, vol2FullName, firstName, lastName, fullName, email, state, phone, width, height;
 
 		it.skip('Full Login', function () {
 			this.retries = 1
@@ -43,13 +43,14 @@ module.exports = function () {
 				.fullLogin() // when no args passed, uses credentials supplied via command line (process.argv.slice(2))
 		});
 
-		it('Login Quick', function () {
+		//todo if this concatenation works use it everywhere
+		it('Login Quick'.bgWhite.blue, function () {
 			this.retries = 1
 			return driver
 				.loginQuick()
 		});
 
-		it.skip('testing', function () {
+		it.skip('testing'.bgWhite.blue, function () {
 			//currently marks a prospect as a volunteer via swiping.
 			return driver
 				.loginQuick()
@@ -81,14 +82,15 @@ module.exports = function () {
                         })
                 })
                 // tap Mark Inactive - todo - guessing the location of Mark Active - fix this once we have an id to click:
-                .elementById(elements.prospects.prospect1.prospect1)
-                .then(function (el) {
-                    var action = new wd.TouchAction(driver);
-                    action
-                      .tap({el: el, x: 564, y: 0})
-                      .release();
-                    return driver.performTouchAction(action);
-                })
+				.elementById(elements.prospects.prospect1.prospect1)
+				.then((el) => {return driver.customTap(el, 564, 0) })
+                //.then(function (el) {
+                //    var action = new wd.TouchAction(driver);
+                //    action
+                //      .customTap({el: el, x: 564, y: 0})
+                //      .release();
+                //    return driver.performTouchAction(action);
+                //})
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.elementById(elements.volunteers.active)
 				.click()
@@ -101,7 +103,7 @@ module.exports = function () {
 		});
 
 		///first test
-		it('Navigate to active volunteer list - tab is selected by default', function () {
+		it('Navigate to active volunteer list - tab is selected by default'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
                 .click()
@@ -110,8 +112,8 @@ module.exports = function () {
                 .then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-		it('Open active volunteer details (edit page) - first test', function () {
-			//open active
+		it('Open active volunteer details (edit page) - first test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -124,53 +126,59 @@ module.exports = function () {
 				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Save volunteer information - first test', function () {
-			//always use this method - more reliable.
+		it('Save volunteer information - first test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-                .elementById(elements.addEditVolunteer.firstName) //first and last name
-                .getAttribute('value')
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
 				.then((value) => { firstName = value.trim() })
 				.elementById(elements.addEditVolunteer.lastName)
 				.getAttribute('value')
 				.then((value) => {lastName = value.trim()})
 				.then(() => {fullName = firstName + ' ' + lastName })
-                .back()
-                .waitForElementById(elements.volunteers.active, 5000)
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
+				.back()
+				.waitForElementById(elements.volunteers.active, 5000)
 		});
 
-        it('On Active tab after going back', function () {
-            return driver
+        it('On Active tab after going back'.bgWhite.blue, function () {
+			return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
                 .elementById(elements.volunteers.active)
                 .then((el) => {return driver.is_selected(el)})
         });
 
-		it('Delete a volunteer from active list - Do Not Contact', function () {
+		it('Delete a volunteer from active list - Do Not Contact'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.select)
 				.click()
-				.elementById(fullName)
+				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.elementById(elements.volunteers.bottomBar.delete)
 				.click()
 				.elementById(elements.volunteers.delete.doNotContact)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
-				//todo cancel?
+				.elementById(elements.actionBar.cancel)
+				.click()
 		});
 
-		it('Volunteer no longer exists in the active tab - first test', function () {
+		it('Volunteer no longer exists in the active tab - first test'.bgWhite.blue, function () {
+			//todo add this everywhere else
             return driver
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(fullName)
-                .sleep(500) // wait for results (should be instant)
-                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+				.sleep(500) // wait for results (should be instant)
+				.elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
 				.then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2000)
+				.sleep(1000)
+				.waitForElementById(elements.volunteers.active, 3000)
+				.then(el => driver.is_visible(el).is_selected(el))
                 // .then(function () {
                     // config.homeScreenStats[0].activecount     -= 1
                     // config.homeScreenStats[0].activepercent    = Math.round((config.homeScreenStats[0].activecount / config.homeScreenStats[0].volunteerbase) * 100) + '%'
@@ -179,7 +187,7 @@ module.exports = function () {
                 // })
 		});
 
-		it('Volunteer still does not exist in tab after refresh', function () {
+		it('Volunteer still does not exist in tab after refresh - first test'.bgWhite.blue, function () {
 			return driver
 				.refresh_vol_or_prospect_list()
                 .elementById(elements.actionBar.search)
@@ -191,18 +199,18 @@ module.exports = function () {
 				.then((el) => {return driver.is_not_visible(el)})
 		});
 
-		it('Active tab visible and selected after cancelling search', function () {
+		it('Active tab visible and selected after cancelling search'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
+				.sleep(1000)
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
 		///second test
-		it('Open first active volunteer edit page - second test', function () {
-			//open active
+		it('Open first active volunteer edit page - second test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -215,42 +223,39 @@ module.exports = function () {
 				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 		
-		
-		it('Save Volunteer Info - second test', function () {
+		it('Save Volunteer Info - second test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-				.elementByIdOrNull(elements.volunteers.volunteer1.volunteer1)
-				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
-				.elementById(elements.volunteers.volunteer1.volunteer1)
-				.click()
-				.waitForElementToDisappearByClassName(elements.general.spinner)
-				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
-				.waitForElementByXPath(elements.vol_details.firstAndLastName, 5000) //first and last name
-				.getAttribute('name')
-				.then((name) => {
-					fullName = name.trim();
-					firstName = name.trim().split(/\s+/).shift()
-					lastName = name.trim().split(/\s+/).pop()
-				})
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 				.back()
 				.waitForElementById(elements.volunteers.active, 5000)
-				.then((el) => {return driver.is_selected(el)})
 		});
 
-		it('Delete a volunteer from active list - Not Interested', function () {
+		it('Delete a volunteer from active list - Not Interested'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.select)
 				.click()
-				.elementById(fullName)
+				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.elementById(elements.volunteers.bottomBar.delete)
 				.click()
 				.elementById(elements.volunteers.delete.notInterested)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.elementById(elements.actionBar.cancel)
+				.click()
 		});
 
-		it('Volunteer no longer exists in the active tab - second test', function () {
-            return driver
+		it('Volunteer no longer exists in the active tab - second test'.bgWhite.blue, function () {
+			return driver
                 .elementById(elements.actionBar.search)
                 .click()
                 .sendKeys(fullName)
@@ -265,60 +270,80 @@ module.exports = function () {
                 // })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
-		it('Volunteer still does not exists in tab after refresh - second test', function () {
+			
+		it('Active tab visible and selected'.bgWhite.blue, function () {
 			return driver
+				.waitForElementById(elements.volunteers.active, 3000)
+				.then(el => driver.is_visible(el).is_selected(el))
+		});
+			
+		it('Volunteer still does not exists in tab after refresh - second test'.bgWhite.blue, function () {
+			return driver
+				.elementByIdOrNull(elements.volunteers.active)
+				.then(el => driver.recoverFromFailuresVolunteers(el))
 				.refresh_vol_or_prospect_list()
-                .elementById(elements.actionBar.search)
+				.elementById(elements.actionBar.search)
 				.click()
 				.clear()
-                .sendKeys(fullName)
-                .sleep(500) // wait for results (should be instant)
-                .elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
+				.sendKeys(fullName)
+				.sleep(500) // wait for results (should be instant)
+				.elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
 				.then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
+
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
 
 		//TODO check the database to ensure vol was updated correctly - deleted and marked notInterested.
 
 		///third test
-		it('Save Volunteer Info - third test', function () {
+		it('Open active volunteer details (edit page) - third test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
-				.elementByIdOrNull(elements.volunteers.volunteer1.volunteer1)
+				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
 				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
-				.waitForElementByXPath(elements.vol_details.firstAndLastName, 5000) //first and last name
-				.getAttribute('name')
-				.then((name) => {
-					fullName  = name.trim();
-					firstName = name.trim().split(/\s+/).shift()
-					lastName  = name.trim().split(/\s+/).pop()
-				})
-				.back()
-				.waitForElementById(elements.volunteers.active, 5000)
-				.then((el) => {return driver.is_selected(el)})
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Delete a volunteer from active list - Moved', function () {
+		it('Save Volunteer Info - third test'.bgWhite.blue, function () {
+			//save vol info from edit
+			return driver
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
+				.back()
+				.waitForElementById(elements.volunteers.active, 5000)
+		});
+
+		it('Delete a volunteer from active list - Moved'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.select)
 				.click()
-				.elementById(fullName)
+				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.elementById(elements.volunteers.bottomBar.delete)
 				.click()
 				.elementById(elements.volunteers.delete.moved)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.elementById(elements.actionBar.cancel)
+				.click()
 		});
 
-		it('Volunteer no longer exists in the active tab - third test', function () {
+		it('Volunteer no longer exists in the active tab - third test'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.search)
 				.click()
@@ -334,9 +359,9 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
-		it('Volunteer still does not exists in tab after refresh - third test', function () {
+		
+		it('Volunteer still does not exists in tab after refresh - third test'.bgWhite.blue, function () {
 			//still on active
 			return driver
 				.refresh_vol_or_prospect_list()
@@ -349,12 +374,11 @@ module.exports = function () {
 				.then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
 
 		///fourth test
-		it('Open first active volunteer edit page', function () {
-			//open active vol
+		it('Open first active volunteer edit page'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -367,40 +391,38 @@ module.exports = function () {
 				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 		
-		it('Save Volunteer Info - fourth test', function () {
+		it('Save Volunteer Info - fourth test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-				.elementByIdOrNull(elements.volunteers.volunteer1.volunteer1)
-				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
-				.elementById(elements.volunteers.volunteer1.volunteer1)
-				.click()
-				.waitForElementToDisappearByClassName(elements.general.spinner)
-				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
-				.waitForElementByXPath(elements.vol_details.firstAndLastName, 5000) //first and last name
-				.getAttribute('name')
-				.then((name) => {
-					fullName = name.trim();
-					firstName = name.trim().split(/\s+/).shift()
-					lastName = name.trim().split(/\s+/).pop()
-				})
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 				.back()
 				.waitForElementById(elements.volunteers.active, 5000)
-				.then((el) => {return driver.is_selected(el)})
 		});
 
-		it('Delete a volunteer from active list - Other', function () {
+		it('Delete a volunteer from active list - Other'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.select)
 				.click()
-				.elementById(fullName)
+				.elementById(elements.volunteers.volunteer1.volunteer1)
 				.click()
 				.elementById(elements.volunteers.bottomBar.delete)
 				.click()
 				.elementById(elements.volunteers.delete.other)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.elementById(elements.actionBar.cancel)
+				.click()
 		});
 
-		it('Volunteer no longer exists in the active tab - fourth test', function () {
+		it('Volunteer no longer exists in the active tab - fourth test'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.actionBar.search)
 				.click()
@@ -416,9 +438,9 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
-		it('Volunteer still does not exist in tab after refresh - fourth test', function () {
+		
+		it('Volunteer still does not exist in tab after refresh - fourth test'.bgWhite.blue, function () {
 			return driver
 				.refresh_vol_or_prospect_list()
 				.elementById(elements.actionBar.search)
@@ -430,29 +452,69 @@ module.exports = function () {
 				.then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
 		});
 
 		///fifth test
-		it('Delete multiple volunteers from active list - Other', function () {
+		it('Save volunteer1 and volunteer2 info'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+				.elementById(elements.volunteers.volunteer1.volunteer1)
+				.click()
+				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
+				.elementById(elements.addEditVolunteer.firstName)
+				.getAttribute('value')
+				.then((value) => { vol1FirstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => { 
+					if (value.trim().length === 0 && vol1FirstName.length === 0	) {
+						throw new Error('The volunteer chosen for volunteer1 has no name')
+					} else {
+						vol1LastName = value.trim() 
+					}
+				})
+				.then(() => { vol1FullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle,5000)
+				.back()
+				.waitForElementById(elements.volunteers.active,5000)
+				.elementById(elements.volunteers.volunteer2.volunteer2)
+				.click()
+				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
+				.elementById(elements.addEditVolunteer.firstName)
+				.getAttribute('value')
+				.then((value) => { vol2FirstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.click()
+				.getAttribute('value')
+				.then((value) => { 
+					if (value.trim().length === 0 && vol2FirstName.length === 0	) {
+						throw new Error('The volunteer chosen for volunteer2 has no name')
+					} else {
+						vol2LastName = value.trim() 
+					}
+				})
+				.then(() => { vol2FullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle,5000)
+				.back()
+				.waitForElementById(elements.volunteers.active,5000)
+		});
+		
+		it('Delete multiple volunteers from active list - Other'.bgWhite.blue, function () {
+			return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_selected(el)})
-				//save names of first and second active volunteers
-				.elementByXPathOrNull(elements.volunteers.volunteer1.fullName)
-				.getAttribute('name')
-				.then((name) => {
-					assert.ok(name.length > 0,'The chosen volunteer in delete mult vols in active list has no name!')
-					vol1FullName = name.trim()
-				})
-				.elementByXPathOrNull(elements.volunteers.volunteer2.fullName)
-				.getAttribute('name')
-				.then((name) => {
-					assert.ok(name.length > 0,'The chosen volunteer in delete mult vols in active list has no name!')
-					vol2FullName = name.trim()
-				})
 				//select vol 1 and 2 and mark inactive
 				.elementById(elements.actionBar.select)
 				.click()
@@ -465,16 +527,17 @@ module.exports = function () {
 				.elementById(elements.volunteers.delete.other)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
+				.elementById(elements.actionBar.cancel)
+				.click()
 		});
 
-        it('Still on the active tab', function () {
+        it('Still on the active tab'.bgWhite.blue, function () {
             return driver
 			.elementById(elements.volunteers.active)
 			.then((el) => {return driver.is_visible(el).is_selected(el)})
-
         });
 
-        it('Volunteer 1 no longer exists in the active tab - fifth test', function () {
+        it('Volunteer 1 no longer exists in the active tab - fifth test'.bgWhite.blue, function () {
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -498,10 +561,9 @@ module.exports = function () {
                 // })
         });
 
-        it('Volunteer 2 no longer exists in the active tab - fifth test', function () {
+        it('Volunteer 2 no longer exists in the active tab - fifth test'.bgWhite.blue, function () {
             return driver
                 .elementById(elements.actionBar.search)
-                .click()
                 .clear()
                 .sendKeys(vol2FullName)
                 .sleep(500) // wait for results (should be instant)
@@ -521,29 +583,28 @@ module.exports = function () {
                 // })
         });
 
-        it('Cancel search', function () {
+        it('Cancel search'.bgWhite.blue, function () {
             return driver
-                .elementById(elements.actionBar.cancel)
+				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
-                .elementByIdOrNull(elements.volunteers.active)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
+				.sleep(1000)
                 .elementById(elements.volunteers.active)
                 .then((el) => {return driver.is_visible(el).is_selected(el)})
         });
 
-        it('Switch to inactive tab', function () {
-            return driver
+        it('Switch to inactive tab'.bgWhite.blue, function () {
+			return driver
+				.elementByIdOrNull(elements.volunteers.active)
+				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
                 .elementById(elements.volunteers.inActive)
                 .click()
                 .elementById(elements.volunteers.inActive)
                 .then((el) => {return driver.is_selected(el)})
         });
 
-        it('Vol1 should not be in inactive tab either', function () {
+        it('Vol1 should not be in inactive tab either'.bgWhite.blue, function () {
 			return driver
-				.sleep(1)
-				.then(() => { assert.ok(vol1FullName.length>0,'vol1FullName is empty') })
+				.refresh_vol_or_prospect_list()
                 .waitForElementById(elements.actionBar.search,10000)
                 .click()
                 .sendKeys(vol1FullName)
@@ -551,29 +612,28 @@ module.exports = function () {
                 .then((el) => {return driver.is_not_visible(el)})
         });
 
-        it('Vol2 should not be in inactive tab either', function () {
+        it('Vol2 should not be in inactive tab either'.bgWhite.blue, function () {
 			return driver
-				.sleep(1)
-				.then(() => { assert.ok(vol2FullName.length>0,'vol2FullName is empty') })
                 .waitForElementById(elements.actionBar.search,10000)
-                .click()
 				.clear()
 				.sendKeys(vol2FullName)
                 .elementByXPath(elements.volunteers.volunteer1.fullName)
                 .then((el) => {return driver.is_not_visible(el)})
-                .elementById(elements.actionBar.cancel)
+				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
+				.elementById(elements.volunteers.active)
+				.click()
         });
 
 		///sixth test
-		it('On Active tab - sixth test', function () {
+		it('On Active tab - sixth test'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-		it('Open active volunteer details - sixth test', function () {
+		it('Open active volunteer details (edit page) - sixth test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -581,20 +641,26 @@ module.exports = function () {
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Save volunteer information - sixth test', function () {
+		it('Save volunteer information - sixth test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-                .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
-                .getAttribute('name')
-                .then((name) => {
-                    fullName = name.trim();
-                    firstName = name.trim().split(/\s+/).shift()
-                    lastName = name.trim().split(/\s+/).pop()
-                })
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 		});
 
-		it('Delete active volunteer from Volunteer Details - Do Not Contact', function () {
+		it('Delete active volunteer from Volunteer Details - Do Not Contact'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.vol_details.delete)
 				.click()
@@ -603,13 +669,13 @@ module.exports = function () {
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-		it('On Active tab - sixth test b', function () {
+		it('On Active tab - sixth test b'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-        it('Volunteer no longer exists in the active tab - sixth test', function () {
+        it('Volunteer no longer exists in the active tab - sixth test'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -627,9 +693,9 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
-        });
-        it('Volunteer still does not exists in tab after refresh - sixth test', function () {
+		});
+		
+        it('Volunteer still does not exists in tab after refresh - sixth test'.bgWhite.blue, function () {
 			return driver
 				.refresh_vol_or_prospect_list()
                 .elementByIdOrNull(elements.volunteers.active)
@@ -643,17 +709,17 @@ module.exports = function () {
                 .then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
         });
 
 		///seventh test
-		it('On Active tab - seventh test', function () {
+		it('On Active tab - seventh test'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-		it('Open active volunteer details - seventh test', function () {
+		it('Open active volunteer details - seventh test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -661,20 +727,26 @@ module.exports = function () {
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Save volunteer information - seventh test', function () {
+		it('Save volunteer information - seventh test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-                .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
-                .getAttribute('name')
-                .then((name) => {
-                    fullName = name.trim();
-                    firstName = name.trim().split(/\s+/).shift()
-                    lastName = name.trim().split(/\s+/).pop()
-                })
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 		});
 
-		it('Delete active volunteer from Volunteer Details - Not Interested', function () {
+		it('Delete active volunteer from Volunteer Details - Not Interested'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.vol_details.delete)
 				.click()
@@ -683,13 +755,13 @@ module.exports = function () {
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-		it('On Active tab - seventh test b', function () {
+		it('On Active tab - seventh test b'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-        it('Volunteer no longer exists in the active tab - seventh test', function () {
+        it('Volunteer no longer exists in the active tab - seventh test'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -707,9 +779,9 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
-        });
-        it('Volunteer still does not exists in tab after refresh - seventh test', function () {
+		});
+		
+        it('Volunteer still does not exists in tab after refresh - seventh test'.bgWhite.blue, function () {
 			return driver
 				.refresh_vol_or_prospect_list()
                 .elementByIdOrNull(elements.volunteers.active)
@@ -723,17 +795,17 @@ module.exports = function () {
                 .then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
         });
 
 		///eigth test
-		it('On Active tab - eigth test', function () {
+		it('On Active tab - eigth test'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-		it('Open active volunteer details - eigth test', function () {
+		it('Open active volunteer details - eigth test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -741,35 +813,42 @@ module.exports = function () {
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Save volunteer information - eigth test', function () {
+		it('Save volunteer information - eigth test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-                .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
-                .getAttribute('name')
-                .then((name) => {
-                    fullName = name.trim();
-                    firstName = name.trim().split(/\s+/).shift()
-                    lastName = name.trim().split(/\s+/).pop()
-                })
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 		});
 
-		it('Delete active volunteer from Volunteer Details - Moved', function () {
+		it('Delete active volunteer from Volunteer Details - Moved'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.vol_details.delete)
 				.click()
 				.elementById(elements.volunteers.delete.moved)
 				.click()
+				.sleep(2000) // time for spinner to appear and hopefully disappear
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-		it('On Active tab - eigth test b', function () {
+		it('On Active tab - eigth test b'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-        it('Volunteer no longer exists in the active tab - eigth test', function () {
+        it('Volunteer no longer exists in the active tab - eigth test'.bgWhite.blue, function () {
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
                 .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -787,15 +866,14 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
-        });
-        it('Volunteer still does not exists in tab after refresh - eigth test', function () {
+		});
+		
+        it('Volunteer still does not exists in tab after refresh - eigth test'.bgWhite.blue, function () {
 			return driver
 				.refresh_vol_or_prospect_list()
                 .elementByIdOrNull(elements.volunteers.active)
                 .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
                 .elementById(elements.actionBar.search)
-				.click()
 				.clear()
                 .sendKeys(fullName)
                 .sleep(500) // wait for results (should be instant)
@@ -803,17 +881,17 @@ module.exports = function () {
                 .then((el) => {return driver.is_not_visible(el)})
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
         });
 
 		///ninth test
-		it('On Active tab - ninth test', function () {
+		it('On Active tab - ninth test'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-		it('Open active volunteer details - ninth test', function () {
+		it('Open active volunteer details - ninth test'.bgWhite.blue, function () {
+			//open active vol details edit page
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
@@ -821,20 +899,26 @@ module.exports = function () {
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 				.waitForElementById(elements.vol_details.volDetailsPageTitle, 20000)
+				.elementById(elements.actionBar.edit)
+				.click()
+				.waitForElementById(elements.addEditVolunteer.editVolunteerPageTitle, 10000)
 		});
 
-		it('Save volunteer information - ninth test', function () {
+		it('Save volunteer information - ninth test'.bgWhite.blue, function () {
+			//save vol info from edit
 			return driver
-                .waitForElementByXPath(elements.vol_details.firstAndLastName, 10000) //first and last name
-                .getAttribute('name')
-                .then((name) => {
-                    fullName = name.trim();
-                    firstName = name.trim().split(/\s+/).shift()
-                    lastName = name.trim().split(/\s+/).pop()
-                })
+				.elementById(elements.addEditVolunteer.firstName) //first and last name
+				.getAttribute('value')
+				.then((value) => { firstName = value.trim() })
+				.elementById(elements.addEditVolunteer.lastName)
+				.getAttribute('value')
+				.then((value) => {lastName = value.trim()})
+				.then(() => {fullName = firstName + ' ' + lastName })
+				.back()
+				.waitForElementById(elements.vol_details.volDetailsPageTitle, 5000)
 		});
 
-		it('Delete active volunteer from Volunteer Details - Other', function () {
+		it('Delete active volunteer from Volunteer Details - Other'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.vol_details.delete)
 				.click()
@@ -843,13 +927,13 @@ module.exports = function () {
 				.waitForElementToDisappearByClassName(elements.general.spinner)
 		});
 
-		it('On Active tab - ninth test b', function () {
+		it('On Active tab - ninth test b'.bgWhite.blue, function () {
             return driver
 				.elementById(elements.volunteers.active)
 				.then((el) => {return driver.is_visible(el).is_selected(el)})
 		});
 
-        it('Volunteer no longer exists in the active tab - ninth test', function () {
+        it('Volunteer no longer exists in the active tab - ninth test'.bgWhite.blue, function () {
 
             return driver
                 .elementByIdOrNull(elements.volunteers.active)
@@ -868,15 +952,14 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
         });
 
-        it('Volunteer still does not exist in tab after refresh', function () {
+        it('Volunteer still does not exist in tab after refresh - ninth test'.bgWhite.blue, function () {
 
 			return driver
+				.elementByIdOrNull(elements.volunteers.active,10000)
+				.then((el) => {return driver.recoverFromFailuresVolunteers(el)})
 				.refresh_vol_or_prospect_list()
-                .waitForElementByIdOrNull(elements.volunteers.active,10000)
-                .then((el) => {return driver.recoverFromFailuresVolunteers(el)})
                 .elementById(elements.actionBar.search)
 				.click()
 				.clear()
@@ -892,7 +975,6 @@ module.exports = function () {
 				// })
 				.elementById(elements.actionBar.cancel)
 				.click()
-				.sleep(2500) // sometimes the animation is slow
         });
 
 

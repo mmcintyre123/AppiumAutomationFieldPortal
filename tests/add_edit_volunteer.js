@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function () {
-	
+
 	//vars
 	require('colors');
 		let   wd            = require("wd");
@@ -31,28 +31,28 @@ module.exports = function () {
 		let	desired;
 		let driver = config.driver;
 		let	commons = require('../helpers/commons'); // this must be after the desired and driver are set
-		
+
 	//todo verify volunteer added in UI, active tab
-	describe("Tests adding and editing volunteers and related actions", function() {
+	describe("Tests adding and editing volunteers and related actions".bgYellow.black, function() {
 
 		let allPassed = true;
 		console.log(('RUNNING ' + __filename.slice(__dirname.length + 1)).green.bold.underline)
 
-		it('Sets variables for test', function () {
+		it('Sets variables for test'.bgWhite.blue, function () {
 			// because beforeAll needs to run before we set these due to the need to have dateTime defined.
 			return driver
 				.sleep(1)
 				.then(function () {
 					config.lastCreatedVolunteer = {};
-					config.firstName = 'First' + config.dateTime;
-					config.lastName  = 'Last' + config.dateTime;
-					config.fullName = config.firstName + ' ' + config.lastName
-					config.email = config.firstName + '.' + config.lastName + '@callingfromhome.com'
-					config.state = 'AL'
-					config.firstNameReg = new RegExp(config.firstName)
-					config.lastNameReg = new RegExp(config.lastName)
-					config.emailReg = new RegExp(config.email)
-					config.stateReg = new RegExp(config.state)
+					config.firstName            = 'First' + config.dateTime;
+					config.lastName             = 'Last' + config.dateTime;
+					config.fullName             = config.firstName + ' ' + config.lastName
+					config.email                = config.firstName + '.' + config.lastName + '@callingfromhome.com'
+					config.state                = 'AL'
+					config.firstNameReg         = new RegExp(config.firstName)
+					config.lastNameReg          = new RegExp(config.lastName)
+					config.emailReg             = new RegExp(config.email)
+					config.stateReg             = new RegExp(config.state)
 
 					let theseCities = cities.findByState(config.state).filter(function nonBlanks (city) {
 						return city.city != '' && city.zipcode != ''
@@ -64,14 +64,14 @@ module.exports = function () {
 				})
 		});
 
-		it('Full Login', function () {
+		it('Full Login'.bgWhite.blue, function () {
 			this.retries = 1
 
 			return driver
 				.fullLogin()
 		});
 
-		it('Open Volunteers, Add Volunteer', function () {
+		it('Open Volunteers, Add Volunteer'.bgWhite.blue, function () {
 			return driver
 				.elementById(elements.homeScreen.volunteers)
 				.click()
@@ -79,7 +79,7 @@ module.exports = function () {
 				.click()
 		});
 
-		it('Add a volunteer', function () {
+		it('Add a volunteer'.bgWhite.blue, function () {
 			return driver
 				.waitForElementById(elements.addEditVolunteer.firstName, 15000)
 					.click()
@@ -103,6 +103,12 @@ module.exports = function () {
 				.elementById(elements.addEditVolunteer.email)
 					.click()
 					.sendKeys(config.email)
+				.elementByXPath(elements.addEditVolunteer.coord)
+				.getAttribute('value')
+				.then((value) => { config.expectedCoordinator = value; }) // set expectedCoordinator
+				.then(() => { sqlQuery.getUserId(config.expectedCoordinator) }) // get userId of expectedCoordinator
+				.wait_for_sql('getUserId', 'userId')
+				.then(() => { config.userIdReg = new RegExp(config.userId[0].userid) }) // set userIdReg for config.expectedCoordinator
 				.elementById(elements.actionBar.save)
 				.click()
 				.waitForElementToDisappearByClassName(elements.general.spinner)
@@ -116,6 +122,7 @@ module.exports = function () {
 
 		//todo finish this
 		it.skip('Add a volunteer in a different state', function () {
+			//try this new method! mobile: selectPickerWheelValue
 			return driver
 				.elementByIdOrNull(elements.actionBar.addVolunteer)
 				.then(function (el) {
@@ -131,7 +138,7 @@ module.exports = function () {
 				.click()
 		});
 
-		it('Volunteer appears in "Active" list', function () {
+		it('Volunteer appears in "Active" list'.bgWhite.blue, function () {
 			return driver
 				.elementByIdOrNull(elements.volunteers.active)
 				.then(function (el) {
@@ -156,12 +163,12 @@ module.exports = function () {
 		});
 
 		//todo add check for state and email appearing under the name in the list
-
-		it('Get new volunteer info from sql', function () {
+		
+		it('Get new volunteer info from sql'.bgWhite.blue, function () {
 			return driver
 				.sleep(1)
 				.then(function () {
-					sqlQuery.getUserId()
+					sqlQuery.getUserId(config.thisUser)
 				})
 				.wait_for_sql('getUserId', 'userId')
 				.then(function(){
@@ -170,48 +177,95 @@ module.exports = function () {
 				.wait_for_sql('getLastCreatedVolunteer','lastCreatedVolunteer')
 		});
 
-		it('Volunteer id was created', function () {
+		it('Volunteer id was created'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].id.should.match(/\d+/)
 		});
 
-		it('Contact id was created', function () {
+		it('Contact id was created'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].contactid.should.match(/\d+/)
 		});
 
-		it('First name was as expected', function () {
+		it('First name was as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].firstname.should.match(config.firstNameReg)
 		});
 
-		it('Last name was as expected', function () {
+		it('Last name was as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].lastname.should.match(config.lastNameReg)
 		});
 
-		it('State was as expected', function () {
+		it('State was as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].state.should.match(config.stateReg)
 		});
 
-		it('Email was as expected', function () {
+		it('Email was as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].email.should.match(config.emailReg)
 		});
 
-		it('Volunteer was active as expected', function () {
+		//todo finish this
+		it.skip('County was as expected'.bgWhite.blue, function () {
+			config.lastCreatedVolunteer[0].county.should.match(/^1$/)
+		});
+
+		it('Volunteer was active as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].active.should.match(/^true$/)
 		});
 
-		it('Volunteer status = 1 as expected', function () {
+		it('Volunteer status = 1 as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].status.should.match(/^1$/)
 		});
 
-		//todo make this programmatic
-		it('Coordinator was as expected', function () {
-			config.lastCreatedVolunteer[0].coordinator.should.match(config.userIdReg)
-		});
 
-		it('lastupdatedby was as expected', function () {
+		//todo store the default selected coordinator from the app and verify with that instead of config.userIdReg
+		it.skip('Coordinator is the value that was pre-populated when creating the volunteer', function () {
+			return driver
+				.sleep(1)
+				.then(() => {
+					sqlQuery.getUserGeo()
+				})
+				.wait_for_sql('getUserGeo','userGeoInfo')
+				.then(() => {
+					console.log('\nUser Geo info:\n'.green.bold); //todo remove
+					console.dir(config.userGeoInfo); //todo remove
+					console.log('\n'); //todo remove
+					config.lastCreatedVolunteer[0].coordinator.should.match(config.userIdReg) // config.expectedCoordinator
+				})
+				.catch(function(err){
+					if (config.userGeoInfo) {
+						// there was some user Geo for the current state and org
+						console.log('There was user Geography Info:\n'.red.bold);
+						console.dir(config.userGeoInfo);
+					} else {
+						console.log('There was no User Geogrpahy info.'.red.bold);
+					}
+					console.log('Volunteer\'s coordinator was not the pre-populated value.  See error below.\n'.red.bold);
+					throw new Error(err)
+				})
+				.finally(()=>{
+					//set config.userid back to the current user todo - alternatively create a special config value for this.
+					return driver
+						.sleep(1)
+						.then(() => {
+							sqlQuery.getUserId(config.thisUser)
+						})
+						.wait_for_sql('getUserId','userId')
+						.then(() => { config.userIdReg = new RegExp(config.userId[0].userid) }) // set userIdReg for config.expectedCoordinator
+				})
+		});
+		
+		it.skip('When there\'s no user geography info the coordinator is the logged in user', function () {
+			if (config.userGeoInfo) {
+				console.log('Skipping test');
+				this.skip //this condition covered in test case above
+			} else {
+				config.lastCreatedVolunteer[0].coordinator.should.match(config.userIdReg)
+			}
+		});
+		
+		it('lastupdatedby was as expected'.bgWhite.blue, function () {
 			config.lastCreatedVolunteer[0].lastupdatedby.should.match(config.userIdReg)
 		});
 
-		it('LogID was as expected', function () {
+		it('LogID was as expected'.bgWhite.blue, function () {
 			let logId = config.databaseNameAndServer[0].orgid + '.' + config.firstName.substring(0,1) + config.lastName;
 			let logIdReg = new RegExp(logId)
 			config.lastCreatedVolunteer[0].logid.should.match(logIdReg)
