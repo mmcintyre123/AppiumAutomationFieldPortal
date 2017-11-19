@@ -3,3 +3,9 @@ apps
 credentials.js
 mssql.js
 queries.js
+creds_old.js
+loadTimeLogs/
+screenShots/
+test_results/
+testing/
+video/
