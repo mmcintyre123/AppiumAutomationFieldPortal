@@ -11,7 +11,29 @@ To do:
 		Homescreen Counts:
 			> Fix login_counts_homescreen_final.js reactivatedcount - needs to take into account volunteer history.  If volunteer was previously reactivated, making them inactive again will turn BACK the reactivatedcount i.e. reduce it by 1.  After saving the volunteer info (whichever one is on top), could query sql to see if they had been previously inactive, and if so, update the reactivatedcount accordingly when we deactivate them.
 
+		General:
 		> make sure we add countyname to all created contacts
+		> Creating a volunteer:
+			- Save default filled in coordinator as config.defaultCoordinator
+			- Run userGeo query with state and org id as inputs.  
+
+					If no results:
+						Before save:
+					    	config.defaultCoordinator should be the user you're logged in with.
+					    After save:
+					    	Coordinator should be config.defaultCoordinator.
+
+					If results:
+						Before save:
+							config.defaultCoordinator should be the coordinator returned by the query
+						    If not, console log a statement with all the volunteer location info and the message:
+						    	"Check the user geography query - coordinator should be the appropriate coordinator for the volunteer's location.  If it's not, file a bug."
+							
+						After save:
+							Coordinator was assigned correctly (matches config.defaultCoordinator)
+						    If not, console log a statement with all the volunteer location info and the message:
+						    	"Check the user geography query - coordinator should be the appropriate coordinator for the volunteer's location.  If it's not, file a bug."
+
 
 	SQL tasks:
 
